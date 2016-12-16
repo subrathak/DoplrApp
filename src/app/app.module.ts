@@ -41,6 +41,7 @@ import { NotificationsService } from '../pages/notifications/notifications.servi
 import { List1Service } from '../pages/list-1/list-1.service';
 import { List2Service } from '../pages/list-2/list-2.service';
 import { ScheduleService } from '../pages/schedule/schedule.service';
+import { CameraService } from '../providers/camera'
 
 @NgModule({
   declarations: [
@@ -104,7 +105,7 @@ import { ScheduleService } from '../pages/schedule/schedule.service';
     PrivacyPolicyPage,
     MapPage
   ],
-  providers: [FeedService, ListingService, ProfileService, NotificationsService, List1Service, List2Service, ScheduleService],
+  providers: [FeedService, ListingService, ProfileService, NotificationsService, List1Service, List2Service, ScheduleService,CameraService],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {}

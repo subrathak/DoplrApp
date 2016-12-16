@@ -6,6 +6,7 @@ import {
  GoogleMapsLatLng,
  Geolocation
 } from 'ionic-native';
+import { CameraService } from '../../providers/camera'
 
 /*
   Generated class for the Map page.
@@ -19,7 +20,7 @@ import {
 })
 export class MapPage {
   public map: GoogleMap;
-  constructor(public navCtrl: NavController) {}
+  constructor(public navCtrl: NavController,public camera:CameraService) {}
 
   ngAfterViewInit() {
     this.loadMap();
@@ -61,6 +62,6 @@ export class MapPage {
   }
 
   addMarker(){
-    alert('Drop completed Successfully');
+    this.camera.takePicture();
   }
 }
