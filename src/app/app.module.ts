@@ -21,6 +21,7 @@ import { List2Page } from '../pages/list-2/list-2';
 import { GridPage } from '../pages/grid/grid';
 import { FormLayoutPage } from '../pages/form-layout/form-layout';
 import { FiltersPage } from '../pages/filters/filters';
+import { MapPage } from '../pages/map/map';
 
 import { TermsOfServicePage } from '../pages/terms-of-service/terms-of-service';
 import { PrivacyPolicyPage } from '../pages/privacy-policy/privacy-policy';
@@ -65,7 +66,7 @@ import { ScheduleService } from '../pages/schedule/schedule.service';
     FiltersPage,
     TermsOfServicePage,
     PrivacyPolicyPage,
-
+    MapPage,
     PreloadImage,
     BackgroundImage,
     ShowHideContainer,
@@ -100,7 +101,8 @@ import { ScheduleService } from '../pages/schedule/schedule.service';
     FormLayoutPage,
     FiltersPage,
     TermsOfServicePage,
-    PrivacyPolicyPage
+    PrivacyPolicyPage,
+    MapPage
   ],
   providers: [FeedService, ListingService, ProfileService, NotificationsService, List1Service, List2Service, ScheduleService],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
