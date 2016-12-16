@@ -7,15 +7,22 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>map</ion-title>
+    <ion-nav-back-button>
+    </ion-nav-back-button>
+    <ion-title>Drop Locations</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding>
-  <div #map id="map"></div>
-  <ion-fab>
-    <button ion-fab color="primary" (click)="addMarker()">Button</button>
-  </ion-fab>
+
+  <div #map id="map">
+    <ion-fab #fab right bottom id="fab">
+      <button  ion-fab color="primary" (click)="addMarker()">
+        <ion-icon name="add"></ion-icon>
+      </button>
+    </ion-fab>
+  </div>
+
 </ion-content>

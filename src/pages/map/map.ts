@@ -34,7 +34,7 @@ export class MapPage {
                 'compass': true,
                 'myLocationButton': true,
                 'indoorPicker': true,
-                'zoom': true
+                'zoom': false
               },
               'gestures': {
                 'scroll': true,
@@ -53,7 +53,7 @@ export class MapPage {
           alert('Map Ready');
         }).catch((err)=>{
           alert(err);
-        })
+        });
       })
     }).catch((err)=>{
       alert(err);

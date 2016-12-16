@@ -5,5 +5,10 @@ ion-app._gmaps_cdv_ .nav-decor{
 page-map {
   #map {
       height: 100%;
+      z-index: 0;
+  }
+
+  #fab{
+    z-index: 9999;
   }
 }
