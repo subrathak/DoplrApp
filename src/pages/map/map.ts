@@ -6,6 +6,8 @@ import {
  GoogleMapsLatLng,
  Geolocation
 } from 'ionic-native';
+import { AuthService } from '../../providers/auth';
+import { LoginPage } from '../login/login';
 
 
 import { CameraService } from '../../providers/camera'
@@ -23,9 +25,10 @@ import { CameraService } from '../../providers/camera'
 export class MapPage {
   public map: GoogleMap;
   public loading: any;
-  constructor(public navCtrl: NavController,public camera:CameraService,public loadingController: LoadingController) {
+  constructor(public navCtrl: NavController,public camera:CameraService,public loadingController: LoadingController,public auth: AuthService) {
     this.loading = this.loadingController.create({
-      content:''
+      content:'',
+      duration:4200
     });
     this.loading.present();
   }

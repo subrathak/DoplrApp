@@ -7,6 +7,7 @@ import { SignupPage } from '../signup/signup';
 import { ForgotPasswordPage } from '../forgot-password/forgot-password';
 import { AuthService } from '../../providers/auth'
 
+
 @Component({
   selector: 'login-page',
   templateUrl: 'login.html'
@@ -27,6 +28,7 @@ export class LoginPage {
   doLogin(){
     console.log(this.login.value);
     this.auth.login('Email',this.login.value.email,this.login.value.password,function(user){
+      alert('Login Successful');
       this.nav.setRoot(this.main_page.component);
     });
 
@@ -37,7 +39,6 @@ export class LoginPage {
   }
 
   doGoogleLogin() {
-    this.nav.setRoot(this.main_page.component);
     this.auth.login('Google','','',function(user){
       this.nav.setRoot(this.main_page.component);
     });

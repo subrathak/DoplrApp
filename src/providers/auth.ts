@@ -1,7 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Injectable,ViewChild } from '@angular/core';
+import { NavController } from 'ionic-angular';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { GooglePlus } from 'ionic-native';
+import { LoginPage } from '../pages/login/login'
 declare var firebase;
 
 /*
@@ -12,6 +14,7 @@ declare var firebase;
 */
 @Injectable()
 export class AuthService {
+  public nav: NavController;
 
   constructor(public http: Http) {
   }
@@ -38,13 +41,13 @@ export class AuthService {
           firebase.auth().signInWithCredential(provider).then((success) =>
                 {
                     alert('Google Login Success');
-                    callback();
+                    callback(success);
+                    alert('callbak was cald');
                 }, (error) =>
                 {
                     alert("Google Login Error");
           });
         }).catch((err)=>{
-          alert('Cant Login Silently');
           GooglePlus.login({
             scope:'',
             webClientId:'446843274237-18gjo8peimndukpnns566jqrbh19lk3r.apps.googleusercontent.com',
@@ -54,7 +57,7 @@ export class AuthService {
             firebase.auth().signInWithCredential(provider).then((success) =>
                   {
                       alert('Google Login Success');
-                      callback();
+                      callback(success);
                   }, (error) =>
                   {
                       alert("Google Login Error");
@@ -63,43 +66,6 @@ export class AuthService {
             alert('Login Error' + err.message);
           })
         })
-        /*GooglePlus.trySilentLogin({
-          scope:'',
-          webClientId:'446843274237-18gjo8peimndukpnns566jqrbh19lk3r.apps.googleusercontent.com',
-          offline:true
-        },
-        function(creds){
-          alert(creds.idToken);
-          let provider = firebase.auth.GoogleAuthProvider.credential(creds.idToken,creds.accessToken);
-          firebase.auth().signInWithCredential(provider).then((success) =>
-                {
-                    alert('Google Login Success');
-                    callback();
-                }, (error) =>
-                {
-                    alert("Google Login Error");
-                });
-        },function(err){
-          alert('Cant Login Silently');
-          GooglePlus.login({
-            scope:'',
-            webClientId:'446843274237-18gjo8peimndukpnns566jqrbh19lk3r.apps.googleusercontent.com',
-            offline:true
-          },
-          function(creds){
-            let provider = firebase.auth.GoogleAuthProvider.credential(creds.idToken,creds.accessToken);
-            firebase.auth().signInWithCredential(provider).then((success) =>
-                  {
-                      alert('Google Login Success');
-                      callback();
-                  }, (error) =>
-                  {
-                      alert("Google Login Error");
-                  });
-          },function(err){
-            alert('Login Error' + err.message);
-          });
-        });*/
         break;
       }
     }
@@ -120,9 +86,14 @@ export class AuthService {
     return firebase.auth().currentUser;
   }
 
+  //SignOut
+  signOut(){
+    firebase.auth().signOut();
+  }
+
   //Auth Observer
   authObserver(callback){
-    return firebase.auth().onStateChanged(function(user){
+    return firebase.auth().onAuthStateChanged(function(user){
       if(user){
         if(user.emailVerified){
           callback(user);
