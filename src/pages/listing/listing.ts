@@ -6,6 +6,7 @@ import 'rxjs/Rx';
 
 import { ListingModel } from './listing.model';
 import { ListingService } from './listing.service';
+import { MapPage } from '../map/map';
 
 
 @Component({
@@ -37,7 +38,12 @@ export class ListingPage {
         this.loading.dismiss();
       });
   }
-
+  changePage(e){
+    alert(e.direction);
+    if(e.direction == 2){
+      this.nav.push(MapPage);
+    }
+  }
 
   goToFeed(category: any) {
     this.nav.push(FeedPage, {

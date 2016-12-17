@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.startapplabs.ion2FullApp" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.neocoretex.doplr" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>ion2-FullApp</name>
     <description>An awesome Ionic 2 Starter app.</description>
     <author email="hi@ionicthemes.com" href="https://ionicthemes.com/">Ionic Themes</author>
@@ -12,6 +12,7 @@
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
     <platform name="android">
+        <preference name="loadUrlTimeoutValue" value="7000000" />
         <allow-intent href="market:*" />
         <icon density="ldpi" src="resources/android/icon/drawable-ldpi-icon.png" />
         <icon density="mdpi" src="resources/android/icon/drawable-mdpi-icon.png" />
@@ -91,4 +92,5 @@
         <variable name="API_KEY_FOR_ANDROID" value="AIzaSyCMgJ2mGvfb9QysdemnV1i3cW2A6WctO8M" />
     </plugin>
     <plugin name="cordova-plugin-camera" spec="~2.3.1" />
+    <plugin name="cordova-plugin-googleplus" spec="~5.1.1" />
 </widget>

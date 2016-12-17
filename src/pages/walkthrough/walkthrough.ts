@@ -9,7 +9,7 @@ import { SignupPage } from '../signup/signup';
   templateUrl: 'walkthrough.html'
 })
 export class WalkthroughPage {
-
+  public name: string = 'WalkthroughPage'
   slide_options = {
     pager: true
   };

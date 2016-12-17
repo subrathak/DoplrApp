@@ -23,6 +23,8 @@ import { FormLayoutPage } from '../pages/form-layout/form-layout';
 import { FiltersPage } from '../pages/filters/filters';
 import { MapPage } from '../pages/map/map';
 
+
+
 import { TermsOfServicePage } from '../pages/terms-of-service/terms-of-service';
 import { PrivacyPolicyPage } from '../pages/privacy-policy/privacy-policy';
 
@@ -42,6 +44,9 @@ import { List1Service } from '../pages/list-1/list-1.service';
 import { List2Service } from '../pages/list-2/list-2.service';
 import { ScheduleService } from '../pages/schedule/schedule.service';
 import { CameraService } from '../providers/camera'
+import { AuthService } from '../providers/auth'
+
+
 
 @NgModule({
   declarations: [
@@ -105,7 +110,7 @@ import { CameraService } from '../providers/camera'
     PrivacyPolicyPage,
     MapPage
   ],
-  providers: [FeedService, ListingService, ProfileService, NotificationsService, List1Service, List2Service, ScheduleService,CameraService],
+  providers: [FeedService, ListingService, ProfileService, NotificationsService, List1Service, List2Service, ScheduleService,CameraService,AuthService],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {}

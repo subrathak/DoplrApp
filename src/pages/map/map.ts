@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController,LoadingController } from 'ionic-angular';
 import {
  GoogleMap,
  GoogleMapsEvent,
  GoogleMapsLatLng,
  Geolocation
 } from 'ionic-native';
+
+
 import { CameraService } from '../../providers/camera'
 
 /*
@@ -20,7 +22,13 @@ import { CameraService } from '../../providers/camera'
 })
 export class MapPage {
   public map: GoogleMap;
-  constructor(public navCtrl: NavController,public camera:CameraService) {}
+  public loading: any;
+  constructor(public navCtrl: NavController,public camera:CameraService,public loadingController: LoadingController) {
+    this.loading = this.loadingController.create({
+      content:''
+    });
+    this.loading.present();
+  }
 
   ngAfterViewInit() {
     this.loadMap();
@@ -51,7 +59,7 @@ export class MapPage {
               }
         });
         this.map.one(GoogleMapsEvent.MAP_READY).then(()=>{
-          alert('Map Ready');
+          this.loading.dismiss();
         }).catch((err)=>{
           alert(err);
         });

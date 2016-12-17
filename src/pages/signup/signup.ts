@@ -6,6 +6,7 @@ import { TermsOfServicePage } from '../terms-of-service/terms-of-service';
 import { PrivacyPolicyPage } from '../privacy-policy/privacy-policy';
 
 import { TabsNavigationPage } from '../tabs-navigation/tabs-navigation';
+import { AuthService } from '../../providers/auth'
 
 @Component({
   selector: 'signup-page',
@@ -15,7 +16,7 @@ export class SignupPage {
   signup: FormGroup;
   main_page: { component: any };
 
-  constructor(public nav: NavController, public modal: ModalController) {
+  constructor(public nav: NavController, public modal: ModalController,public auth: AuthService) {
     this.main_page = { component: TabsNavigationPage };
 
     this.signup = new FormGroup({
@@ -27,7 +28,9 @@ export class SignupPage {
 
   doSignup(){
     console.log(this.signup.value);
-    this.nav.setRoot(this.main_page.component);
+    this.auth.signUp(this.signup.value.email,this.signup.value.password,function(user){
+      this.nav.setRoot(this.main_page.component);
+    });
   }
 
   doFacebookSignup() {
@@ -35,7 +38,9 @@ export class SignupPage {
   }
 
   doGoogleSignup() {
-    this.nav.setRoot(this.main_page.component);
+    this.auth.login('Google','','',function(user){
+      this.nav.setRoot(this.main_page.component);
+    });
   }
 
   showTermsModal() {

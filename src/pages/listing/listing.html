@@ -11,7 +11,7 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content class="listing-content">
+<ion-content class="listing-content" (swipe)="changePage($event)">
   <background-image class="image-heading" [src]="listing.banner_image">
     <ion-row class="heading-row">
       <ion-col no-padding width-100>

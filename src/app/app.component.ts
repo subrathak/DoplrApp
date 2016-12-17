@@ -6,7 +6,9 @@ import { TabsNavigationPage } from '../pages/tabs-navigation/tabs-navigation';
 import { FormsPage } from '../pages/forms/forms';
 import { LayoutsPage } from '../pages/layouts/layouts';
 import { WalkthroughPage } from '../pages/walkthrough/walkthrough';
+import { LoginPage } from '../pages/login/login';
 import { SettingsPage } from '../pages/settings/settings';
+import { AuthService } from '../providers/auth';
 
 @Component({
   selector: 'app-root',
@@ -25,7 +27,8 @@ export class MyApp {
   constructor(
     platform: Platform,
     public menu: MenuController,
-    public app: App
+    public app: App,
+    public auth: AuthService
   ) {
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
@@ -44,6 +47,18 @@ export class MyApp {
       { title: 'Settings', icon: 'settings', component: SettingsPage }
     ];
   }
+  /*ngOnInit(){
+    this.auth.authObserver(function(user){
+      if(!user){
+
+        if(this.nav.getActive().component.name!="WalkthroughPage" && this.nav.getActive().component.name!="SignUpPage" && this.nav.getActive().component.name!="LoginPage"){
+          this.nav.setRoot(LoginPage);
+          this.nav.setRoot(LoginPage);
+        }
+
+      }
+    })
+  }*/
 
   openPage(page) {
     // close the menu when clicking a link from the menu
