@@ -1,9 +1,7 @@
-import { Injectable,ViewChild } from '@angular/core';
-import { NavController } from 'ionic-angular';
-import { Http } from '@angular/http';
+import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
 import { GooglePlus } from 'ionic-native';
-import { LoginPage } from '../pages/login/login'
+import { Events } from 'ionic-angular'
 declare var firebase;
 
 /*
@@ -14,70 +12,67 @@ declare var firebase;
 */
 @Injectable()
 export class AuthService {
-  public nav: NavController;
-
-  constructor(public http: Http) {
+  constructor(public events: Events) {
   }
   //LogIn
   login(method:String,email:String,password:String,callback){
     switch(method)
     {
       case 'Email':{
-        firebase.auth().signInWithEmailAndPassword(email,password).then((user)=>{
-          callback(user);
+        return firebase.auth().signInWithEmailAndPassword(email,password)/*.then((user)=>{
+          callback(user,null);
         }).catch((err)=>{
-          if(err)alert(err.message);
-        });
-        break;
+          callback(null,err);
+        });*/
       }
       case 'Google':{
+        let promise:any;
         GooglePlus.trySilentLogin({
           scope:'',
           webClientId:'446843274237-18gjo8peimndukpnns566jqrbh19lk3r.apps.googleusercontent.com',
           offline:true
         }).then((creds)=>{
-          alert(creds.idToken);
           let provider = firebase.auth.GoogleAuthProvider.credential(creds.idToken,creds.accessToken);
-          firebase.auth().signInWithCredential(provider).then((success) =>
+          promise =  firebase.auth().signInWithCredential(provider).then((success) =>
                 {
-                    alert('Google Login Success');
-                    callback(success);
-                    alert('callbak was cald');
+                    this.events.publish('done',success);
                 }, (error) =>
                 {
-                    alert("Google Login Error");
+                    this.events.publish('err','Firebase');
           });
         }).catch((err)=>{
-          GooglePlus.login({
-            scope:'',
-            webClientId:'446843274237-18gjo8peimndukpnns566jqrbh19lk3r.apps.googleusercontent.com',
-            offline:true
-          }).then((creds)=>{
-            let provider = firebase.auth.GoogleAuthProvider.credential(creds.idToken,creds.accessToken);
-            firebase.auth().signInWithCredential(provider).then((success) =>
-                  {
-                      alert('Google Login Success');
-                      callback(success);
-                  }, (error) =>
-                  {
-                      alert("Google Login Error");
-            });
-          }).catch((err)=>{
-            alert('Login Error' + err.message);
-          })
-        })
-        break;
+          alert(err);
+          this.googleLogin();
+        });
       }
     }
   }
-
+  //GoogleLogin
+  googleLogin(){
+    let promise:any;
+    GooglePlus.login({
+      scope:'',
+      webClientId:'446843274237-18gjo8peimndukpnns566jqrbh19lk3r.apps.googleusercontent.com',
+      offline:true
+    }).then((creds)=>{
+      let provider = firebase.auth.GoogleAuthProvider.credential(creds.idToken,creds.accessToken);
+      firebase.auth().signInWithCredential(provider).then((success) =>
+            {
+                this.events.publish('done',success);
+            }, (error) =>
+            {
+                this.events.publish('err','Firebase');
+      });
+    }).catch((err)=>{
+      this.events.publish('err','Google');
+    });
+  }
   //SignUp
   signUp(email:String,password:String,callback){
     firebase.auth().createUserWithEmailAndPassword(email,password).then((success)=>{
-      alert('Sign Up Successful');
-      callback(success);
+      callback(success,null);
     }).catch((err)=>{
-      alert(err.message);
+      callback(null,err);
     });
   }
 

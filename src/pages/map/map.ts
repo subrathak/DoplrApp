@@ -27,8 +27,7 @@ export class MapPage {
   public loading: any;
   constructor(public navCtrl: NavController,public camera:CameraService,public loadingController: LoadingController,public auth: AuthService) {
     this.loading = this.loadingController.create({
-      content:'',
-      duration:4200
+      content:''
     });
     this.loading.present();
   }
@@ -64,6 +63,7 @@ export class MapPage {
         this.map.one(GoogleMapsEvent.MAP_READY).then(()=>{
           this.loading.dismiss();
         }).catch((err)=>{
+          this.loading.dismiss();
           alert(err);
         });
       })

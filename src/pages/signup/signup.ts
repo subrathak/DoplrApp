@@ -28,8 +28,12 @@ export class SignupPage {
 
   doSignup(){
     console.log(this.signup.value);
-    this.auth.signUp(this.signup.value.email,this.signup.value.password,function(user){
-      this.nav.setRoot(this.main_page.component);
+    this.auth.signUp(this.signup.value.email,this.signup.value.password,function(user,err){
+      if(err){
+        alert("SignUp Unsuccessful");
+        return;
+      }
+      alert("Verify your email");
     });
   }
 
@@ -38,7 +42,11 @@ export class SignupPage {
   }
 
   doGoogleSignup() {
-    this.auth.login('Google','','',function(user){
+    this.auth.login('Google','','',function(user,err){
+      if(err){
+        alert("Google SignUp Unsuccessful");
+        return;
+      }
       this.nav.setRoot(this.main_page.component);
     });
   }
