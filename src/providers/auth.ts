@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
-import { GooglePlus } from 'ionic-native';
+import { GooglePlus, Facebook, NativeStorage } from 'ionic-native';
 import { Events } from 'ionic-angular'
+
 declare var firebase;
 
 /*
@@ -12,7 +13,9 @@ declare var firebase;
 */
 @Injectable()
 export class AuthService {
+  FB_APP_ID: number = 1776633459256045;
   constructor(public events: Events) {
+    Facebook.browserInit(this.FB_APP_ID, "v2.8");
   }
   //LogIn
   login(method:String,email:String,password:String,callback){
@@ -45,6 +48,26 @@ export class AuthService {
           this.googleLogin();
         });
       }
+      case 'Facebook':{
+        let promise:any;
+        Facebook.getLoginStatus().then((creds)=>{
+          alert("Middle");
+          if(creds.status == "connected"){
+            let facebookCredential = firebase.auth.FacebookAuthProvider.credential(creds.authResponse.accessToken);
+            promise =  firebase.auth().signInWithCredential(facebookCredential).then((success) =>
+                  {
+                      this.events.publish('done',success);
+                  }, (error) =>
+                  {
+                      this.events.publish('err','Firebase');
+            });
+          } else{
+            alert("First");
+            this.fbLogin();
+          }
+        });
+        // this.fbLogin();
+      }
     }
   }
   //GoogleLogin
@@ -66,6 +89,55 @@ export class AuthService {
     }).catch((err)=>{
       this.events.publish('err','Google');
     });
+  }
+  //facebook login
+  fbLogin(){
+    let permissions = new Array<string>();
+    // let nav = this.navCtrl;
+    //the permissions your facebook app needs from the user
+    permissions = ["public_profile"];
+
+    Facebook.login(permissions)
+    // .then(function(response){
+    //   let userId = response.authResponse.userID;
+    //   let params = new Array<string>();
+    //
+    //   //Getting name and gender properties
+    //   Facebook.api("/me?fields=name,gender", params)
+      .then((creds)=>{
+        let facebookCredential = firebase.auth.FacebookAuthProvider.credential(creds.authResponse.accessToken);
+        firebase.auth().signInWithCredential(facebookCredential).then((success) =>
+              {
+                  this.events.publish('done',success);
+              }, (error) =>
+              {
+                  this.events.publish('err','Firebase');
+        });
+      }).catch((err)=>{
+        alert("Second");
+
+        this.events.publish('err','Facebook');
+      });
+
+      //
+    //   .then(function(user) {
+    //     user.picture = "https://graph.facebook.com/" + userId + "/picture?type=large";
+    //     //now we have the users info, let's save it in the NativeStorage
+    //     NativeStorage.setItem('user',
+    //     {
+    //       name: user.name,
+    //       gender: user.gender,
+    //       picture: user.picture
+    //     })
+    //     .then(function(){
+    //       nav.push(UserPage);
+    //     }, function (error) {
+    //       console.log(error);
+    //     })
+    //   })
+    // }, function(error){
+    //   console.log(error);
+    // });
   }
   //SignUp
   signUp(email:String,password:String,callback){

@@ -54,7 +54,12 @@ export class LoginPage {
   }
 
   doFacebookLogin() {
-    this.nav.setRoot(this.main_page.component);
+    // this.nav.setRoot(this.main_page.component);
+    this.loading =  this.loadingController.create({
+      content:''
+    });
+    this.loading.present();
+    this.auth.login('Facebook','','','')
   }
 
   doGoogleLogin() {
