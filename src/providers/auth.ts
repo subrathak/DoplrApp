@@ -21,14 +21,14 @@
     login(method:String,email:String,password:String,callback){
       switch(method)
       {
-        case 'Email':{
+        case 'Email':
           return firebase.auth().signInWithEmailAndPassword(email,password)/*.then((user)=>{
             callback(user,null);
           }).catch((err)=>{
             callback(null,err);
           });*/
-        }
-        case 'Google':{
+
+        case 'Google':
           let promise:any;
           GooglePlus.trySilentLogin({
             scope:'',
@@ -47,8 +47,8 @@
             alert(err);
             this.googleLogin();
           });
-        }
-        case 'Facebook':{
+          break;
+        case 'Facebook':
           // let promise:any;
           // Facebook.getLoginStatus().then((creds)=>{
           //   alert("Middle");
@@ -66,8 +66,9 @@
           //     this.fbLogin();
           //   }
           // });
-          this.doFbLogin();
-        }
+          this.fbLogin();
+          break;
+
       }
     }
     //GoogleLogin
@@ -95,95 +96,30 @@
       GooglePlus.disconnect();
     }
     //facebook login
-    // fbLogin(){
-    //   let permissions = new Array<string>();
-    //   // let nav = this.navCtrl;
-    //   //the permissions your facebook app needs from the user
-    //   permissions = ["public_profile"];
-    //
-    //   Facebook.login(permissions)
-    //   // .then(function(response){
-    //   //   let userId = response.authResponse.userID;
-    //   //   let params = new Array<string>();
-    //   //
-    //   //   //Getting name and gender properties
-    //   //   Facebook.api("/me?fields=name,gender", params)
-    //     .then((creds)=>{
-    //       let facebookCredential = firebase.auth.FacebookAuthProvider.credential(creds.authResponse.accessToken);
-    //       firebase.auth().signInWithCredential(facebookCredential).then((success) =>
-    //             {
-    //                 this.events.publish('done',success);
-    //             }, (error) =>
-    //             {
-    //                 this.events.publish('err','Firebase');
-    //       });
-    //     }).catch((err)=>{
-    //       alert("Second");
-    //
-    //       this.events.publish('err','Facebook');
-    //     });
+    fbLogin(){
+      let permissions = new Array<string>();
+      permissions = ["public_profile"];
+      Facebook.login(permissions)
+        .then((creds)=>{
+          let facebookCredential = firebase.auth.FacebookAuthProvider.credential(creds.authResponse.accessToken);
+          this.createUserFromFacebook(creds.authResponse.userID);
+          firebase.auth().signInWithCredential(facebookCredential).then((success) =>
+                {
+                    this.events.publish('done',success);
+                }, (error) =>
+                {
+                    this.events.publish('err','Firebase');
+          });
+        }).catch((err)=>{
+          alert("Second");
+          this.events.publish('err','Facebook');
+        });
+      }
 
   init(){
     Facebook.browserInit(this.FB_APP_ID, "v2.8");
   }
-  doFbLogin(){
 
-      let permissions = new Array<string>();
-      // let nav = this.navCtrl;
-      //the permissions your facebook app needs from the user
-      permissions = ["public_profile"];
-
-      Facebook.login(permissions)
-      .then(function(response){
-        let userId = response.authResponse.userID;
-        let params = new Array<string>();
-
-        //Getting name and gender properties
-        Facebook.api("/me?fields=name,gender", params)
-        .then(function(user) {
-          alert("Facebook login working part 1");
-          user.picture = "https://graph.facebook.com/" + userId + "/picture?type=large";
-          //now we have the users info, let's save it in the NativeStorage
-          alert(user);
-          NativeStorage.setItem('user',
-          {
-            name: user.name,
-            gender: user.gender,
-            picture: user.picture
-          })
-          .then(function(){
-            // nav.push(UserPage);
-            alert("FB login working ...");
-          }, function (error) {
-            console.log(error);
-          })
-        })
-      }, function(error){
-        alert("Error is happening here");
-        this.events.publish('err','Facebook');
-        console.log(error);
-      });
-
-        //
-      //   .then(function(user) {
-      //     user.picture = "https://graph.facebook.com/" + userId + "/picture?type=large";
-      //     //now we have the users info, let's save it in the NativeStorage
-      //     NativeStorage.setItem('user',
-      //     {
-      //       name: user.name,
-      //       gender: user.gender,
-      //       picture: user.picture
-      //     })
-      //     .then(function(){
-      //       nav.push(UserPage);
-      //     }, function (error) {
-      //       console.log(error);
-      //     })
-      //   })
-      // }, function(error){
-      //   console.log(error);
-      // });
-    }
     //SignUp
     signUp(email:String,password:String,callback){
       firebase.auth().createUserWithEmailAndPassword(email,password).then((success)=>{
@@ -201,6 +137,30 @@
     //SignOut
     signOut(){
       firebase.auth().signOut();
+    }
+
+    createUserFromFacebook(userId){
+      // let userId = userID;
+      let params = new Array<string>();
+
+      //Getting name and gender properties
+      Facebook.api("/me?fields=name,gender", params)
+      .then(function(user) {
+        user.picture = "https://graph.facebook.com/" + userId + "/picture?type=large";
+        //now we have the users info, let's save it in the NativeStorage
+        NativeStorage.setItem('user',
+        {
+          userID: userId,
+          name: user.name,
+          gender: user.gender,
+          picture: user.picture
+        });
+      });
+      NativeStorage.getItem('user')
+      .then(function(user){
+        alert(user.name);
+        firebase.database().ref('users/'+this.NativeStorage.getItem('user').userID.set(user));
+      });
     }
 
     //Auth Observer
