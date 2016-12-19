@@ -19,7 +19,7 @@ export class LoginPage {
 
   constructor(public nav: NavController,public auth: AuthService,public loadingController: LoadingController,public events: Events) {
     this.main_page = { component: TabsNavigationPage };
-
+    this.auth.init();
     this.login = new FormGroup({
       email: new FormControl('', Validators.required),
       password: new FormControl('test', Validators.required)
