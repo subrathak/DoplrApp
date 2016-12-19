@@ -30,6 +30,7 @@ export class MyApp {
     public auth: AuthService,
     public events: Events
   ) {
+
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
@@ -48,9 +49,14 @@ export class MyApp {
     ];
   }
   ngOnInit(){
+    this.auth.disconnect();
     this.events.subscribe('event:loggedOut',()=>{
       this.nav.setRoot(LoginPage);
-    })
+    });
+    let user = this.auth.getUser();
+    if(user){
+      this.nav.setRoot(TabsNavigationPage);
+    }
   }
 
   openPage(page) {

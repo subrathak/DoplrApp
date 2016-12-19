@@ -92,4 +92,8 @@
     <plugin name="cordova-plugin-camera" spec="~2.3.1" />
     <plugin name="cordova-plugin-googleplus" spec="~5.1.1" />
     <engine name="android" spec="~5.1.1" />
+    <plugin name="cordova-plugin-facebook4" spec="~1.7.4">
+        <variable name="APP_ID" value="1776633459256045" />
+        <variable name="APP_NAME" value="doplr" />
+    </plugin>
 </widget>

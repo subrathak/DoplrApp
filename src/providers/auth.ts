@@ -90,6 +90,10 @@
         this.events.publish('err','Google');
       });
     }
+
+    disconnect(){
+      GooglePlus.disconnect();
+    }
     //facebook login
     // fbLogin(){
     //   let permissions = new Array<string>();
@@ -137,6 +141,7 @@
         //Getting name and gender properties
         Facebook.api("/me?fields=name,gender", params)
         .then(function(user) {
+          alert("Facebook login working part 1");
           user.picture = "https://graph.facebook.com/" + userId + "/picture?type=large";
           //now we have the users info, let's save it in the NativeStorage
           alert(user);
@@ -154,6 +159,8 @@
           })
         })
       }, function(error){
+        alert("Error is happening here");
+        this.events.publish('err','Facebook');
         console.log(error);
       });
 
