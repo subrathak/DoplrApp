@@ -102,9 +102,10 @@
       Facebook.login(permissions)
         .then((creds)=>{
           let facebookCredential = firebase.auth.FacebookAuthProvider.credential(creds.authResponse.accessToken);
-          this.createUserFromFacebook(creds.authResponse.userID);
+
           firebase.auth().signInWithCredential(facebookCredential).then((success) =>
                 {
+                    this.createUserFromFacebook(creds.authResponse.userID);
                     this.events.publish('done',success);
                 }, (error) =>
                 {
@@ -140,12 +141,14 @@
     }
 
     createUserFromFacebook(userId){
+
       // let userId = userID;
       let params = new Array<string>();
 
       //Getting name and gender properties
       Facebook.api("/me?fields=name,gender", params)
       .then(function(user) {
+        alert("Getting done");
         user.picture = "https://graph.facebook.com/" + userId + "/picture?type=large";
         //now we have the users info, let's save it in the NativeStorage
         NativeStorage.setItem('user',
@@ -155,13 +158,18 @@
           gender: user.gender,
           picture: user.picture
         });
-      });
+      }).then(()=>{
       NativeStorage.getItem('user')
       .then(function(user){
         alert(user.name);
-        firebase.database().ref('users/'+this.NativeStorage.getItem('user').userID.set(user));
+        firebase.database().ref('users/'+user.userID).set(user,()=>{
+          alert("User Set");
+        });
+      }).catch((err)=>{
+        alert(JSON.stringify(err));
       });
-    }
+    });
+    };
 
     //Auth Observer
     authObserver(callback){

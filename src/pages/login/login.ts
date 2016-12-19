@@ -25,7 +25,6 @@ export class LoginPage {
       password: new FormControl('test', Validators.required)
     });
     events.subscribe('done',(promise)=>{
-        alert('Google Login Success');
         this.loading.dismiss();
         events.unsubscribe('done');
         events.unsubscribe('error');
