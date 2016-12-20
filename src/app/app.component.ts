@@ -7,7 +7,6 @@ import { FormsPage } from '../pages/forms/forms';
 import { LayoutsPage } from '../pages/layouts/layouts';
 import { WalkthroughPage } from '../pages/walkthrough/walkthrough';
 import { SettingsPage } from '../pages/settings/settings';
-import { AuthService } from '../providers/auth';
 
 @Component({
   selector: 'app-root',
@@ -27,7 +26,6 @@ export class MyApp {
     platform: Platform,
     public menu: MenuController,
     public app: App,
-    public auth: AuthService,
     public events: Events
   ) {
 
@@ -49,15 +47,7 @@ export class MyApp {
     ];
   }
   ngOnInit(){
-    this.auth.signOut();
-    this.auth.disconnect();
-    this.events.subscribe('event:loggedOut',()=>{
-      this.nav.setRoot(LoginPage);
-    });
-    let user = this.auth.getUser();
-    if(user){
-      this.nav.setRoot(TabsNavigationPage);
-    }
+    
   }
 
   openPage(page) {

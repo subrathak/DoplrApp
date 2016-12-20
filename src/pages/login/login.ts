@@ -5,7 +5,6 @@ import { Validators, FormGroup, FormControl } from '@angular/forms';
 import { TabsNavigationPage } from '../tabs-navigation/tabs-navigation';
 import { SignupPage } from '../signup/signup';
 import { ForgotPasswordPage } from '../forgot-password/forgot-password';
-import { AuthService } from '../../providers/auth'
 import { ContactsService } from '../../providers/contacts'
 
 
@@ -18,9 +17,8 @@ export class LoginPage {
   main_page: { component: any };
   loading: any;
 
-  constructor(public nav: NavController,public auth: AuthService,public loadingController: LoadingController,public events: Events,public contact: ContactsService) {
+  constructor(public nav: NavController,public loadingController: LoadingController,public events: Events,public contact: ContactsService) {
     this.main_page = { component: TabsNavigationPage };
-    this.auth.init();
     this.login = new FormGroup({
       email: new FormControl('', Validators.required),
       password: new FormControl('test', Validators.required)
@@ -44,19 +42,7 @@ export class LoginPage {
   }
 
   doLogin(){
-    this.loading =  this.loadingController.create({
-      content:''
-    });
-    this.auth.login('Email',this.login.value.email,this.login.value.password,'').then((user)=>{
-      this.loading.dismiss();
-      alert('Login Successful');
-      this.contact.init();
-      //this.nav.setRoot(this.main_page.component);
-    }).catch((err)=>{
-      this.loading.dismiss();
-        alert('Invalid Email or Password');
-      });
-
+    this.nav.setRoot(this.main_page.component);
   }
 
   doFacebookLogin() {
@@ -65,15 +51,13 @@ export class LoginPage {
     //   content:''
     // });
     // this.loading.present();
-    this.auth.login('Facebook','','','')
+    this.nav.setRoot(this.main_page.component);
+
   }
 
   doGoogleLogin() {
-    this.loading =  this.loadingController.create({
-      content:''
-    });
-    this.loading.present();
-    this.auth.login('Google','','','');
+    this.nav.setRoot(this.main_page.component);
+
 
     /*.then((user)=>{
       this.loading.dismiss();
