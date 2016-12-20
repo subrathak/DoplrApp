@@ -6,6 +6,7 @@ import { TabsNavigationPage } from '../tabs-navigation/tabs-navigation';
 import { SignupPage } from '../signup/signup';
 import { ForgotPasswordPage } from '../forgot-password/forgot-password';
 import { AuthService } from '../../providers/auth'
+import { ContactsService } from '../../providers/contacts'
 
 
 @Component({
@@ -17,7 +18,7 @@ export class LoginPage {
   main_page: { component: any };
   loading: any;
 
-  constructor(public nav: NavController,public auth: AuthService,public loadingController: LoadingController,public events: Events) {
+  constructor(public nav: NavController,public auth: AuthService,public loadingController: LoadingController,public events: Events,public contact: ContactsService) {
     this.main_page = { component: TabsNavigationPage };
     this.auth.init();
     this.login = new FormGroup({
@@ -25,9 +26,14 @@ export class LoginPage {
       password: new FormControl('test', Validators.required)
     });
     events.subscribe('done',(promise)=>{
-        this.loading.dismiss();
+        alert(promise + ' Login success');
+        try{
+          this.loading.dismiss();
+        }catch(e){
+        }
         events.unsubscribe('done');
-        events.unsubscribe('error');
+        events.unsubscribe('err');
+        //contact.init();
         nav.setRoot(this.main_page.component);
     });
 
@@ -44,7 +50,8 @@ export class LoginPage {
     this.auth.login('Email',this.login.value.email,this.login.value.password,'').then((user)=>{
       this.loading.dismiss();
       alert('Login Successful');
-      this.nav.setRoot(this.main_page.component);
+      this.contact.init();
+      //this.nav.setRoot(this.main_page.component);
     }).catch((err)=>{
       this.loading.dismiss();
         alert('Invalid Email or Password');

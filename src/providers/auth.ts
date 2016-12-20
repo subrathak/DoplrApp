@@ -38,7 +38,7 @@
             let provider = firebase.auth.GoogleAuthProvider.credential(creds.idToken,creds.accessToken);
             promise =  firebase.auth().signInWithCredential(provider).then((success) =>
                   {
-                      this.events.publish('done',success);
+                      this.events.publish('done','Google');
                   }, (error) =>
                   {
                       this.events.publish('err','Firebase');
@@ -56,7 +56,7 @@
           //     let facebookCredential = firebase.auth.FacebookAuthProvider.credential(creds.authResponse.accessToken);
           //     promise =  firebase.auth().signInWithCredential(facebookCredential).then((success) =>
           //           {
-          //               this.events.publish('done',success);
+          //               this.events.publish('done','Google');
           //           }, (error) =>
           //           {
           //               this.events.publish('err','Firebase');
@@ -82,7 +82,7 @@
         let provider = firebase.auth.GoogleAuthProvider.credential(creds.idToken,creds.accessToken);
         firebase.auth().signInWithCredential(provider).then((success) =>
               {
-                  this.events.publish('done',success);
+                  this.events.publish('done','Google');
               }, (error) =>
               {
                   this.events.publish('err','Firebase');
@@ -106,7 +106,6 @@
           firebase.auth().signInWithCredential(facebookCredential).then((success) =>
                 {
                     this.createUserFromFacebook(creds.authResponse.userID);
-                    this.events.publish('done',success);
                 }, (error) =>
                 {
                     this.events.publish('err','Firebase');
@@ -141,6 +140,7 @@
     }
 
     createUserFromFacebook(userId){
+      var self = this;
 
       // let userId = userID;
       let params = new Array<string>();
@@ -148,7 +148,6 @@
       //Getting name and gender properties
       Facebook.api("/me?fields=name,gender", params)
       .then(function(user) {
-        alert("Getting done");
         user.picture = "https://graph.facebook.com/" + userId + "/picture?type=large";
         //now we have the users info, let's save it in the NativeStorage
         NativeStorage.setItem('user',
@@ -156,18 +155,25 @@
           userID: userId,
           name: user.name,
           gender: user.gender,
-          picture: user.picture
+          picture: user.picture,
+          phone:917387920029
         });
       }).then(()=>{
       NativeStorage.getItem('user')
       .then(function(user){
-        alert(user.name);
         firebase.database().ref('users/'+user.userID).set(user,()=>{
-          alert("User Set");
+          self.events.publish('done','Facebook');
+          //this.events.subscribe('do',()=>{
+          //  alert('Done');
+          //})
+        }).catch((err)=>{
+          alert(JSON.stringify(err));
         });
       }).catch((err)=>{
         alert(JSON.stringify(err));
       });
+    }).catch((err)=>{
+      alert(JSON.stringify(err));
     });
     };
 

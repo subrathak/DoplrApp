@@ -49,6 +49,7 @@ export class MyApp {
     ];
   }
   ngOnInit(){
+    this.auth.signOut();
     this.auth.disconnect();
     this.events.subscribe('event:loggedOut',()=>{
       this.nav.setRoot(LoginPage);

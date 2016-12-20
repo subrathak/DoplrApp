@@ -45,6 +45,7 @@ import { List2Service } from '../pages/list-2/list-2.service';
 import { ScheduleService } from '../pages/schedule/schedule.service';
 import { CameraService } from '../providers/camera'
 import { AuthService } from '../providers/auth'
+import { ContactsService } from '../providers/contacts';
 
 
 
@@ -110,7 +111,7 @@ import { AuthService } from '../providers/auth'
     PrivacyPolicyPage,
     MapPage
   ],
-  providers: [FeedService, ListingService, ProfileService, NotificationsService, List1Service, List2Service, ScheduleService,CameraService,AuthService],
+  providers: [FeedService, ListingService, ProfileService, NotificationsService, List1Service, List2Service, ScheduleService,CameraService,AuthService,ContactsService],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {}
