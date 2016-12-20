@@ -54,48 +54,6 @@ export class ContactsService {
         nonExisitingNums:nonExisitingNums
       });
     },240000)
-    /*Contacts.pickContact().then((contact)=>{
-      var phoneNumbers = contact.phoneNumbers;
-      var length = phoneNumbers.length;
-      for(let i=0;i<length;i++){
-        let x = this.numParse(phoneNumbers[i].value.split(' ').join(""));
-        setTimeout(function(){
-          ref.child('users').orderByChild('phone').equalTo(parseInt(x,10)).once('value',(snap)=>{
-            if(!snap.exists()){
-              alert('Doesnt exist');
-            }else{
-              alert('Does Exist');
-            }
-          })
-        },50)
-      }
-    })*/
-    /*ref.child('users').orderByChild('phone').equalTo(917387920029).once('value',(snap)=>{
-      try{
-        if(snap.exists()){
-          alert('This is it 7387');
-        }else{
-          alert("Not It 7387");
-        }
-      }catch(e){
-        alert("Some Error");
-      }
-    },(err)=>{
-      alert(JSON.stringify(err));
-    });
-    ref.child('users').orderByChild('phone').equalTo(1234567890).on('value',(snap)=>{
-      try{
-        if(snap.exists()){
-          alert('This is it 1234');
-        }else{
-          alert("Not It " + 1234);
-        }
-      }catch(e){
-        alert("Some Error");
-      }
-    },(err)=>{
-      alert(JSON.stringify(err));
-    });*/
     Contacts.find(['*'],{}).then((contacts)=>{
       var length = contacts.length;
       for(let i = 0;i<length;i++){
@@ -117,47 +75,33 @@ export class ContactsService {
             y++;
             setTimeout(function(){
               console.log('Querying firebase '+query);
-              ref.orderByChild('phone').equalTo(parseInt(query,10)).once('value',(snap)=>{
+              ref.child('users').orderByChild('phone').equalTo(parseInt(query,10)).once('value',(snap)=>{
                 x++;
                 console.log(y-x);
-                if(query === '917387920029'){
-                  alert('Something is wrong');
-                }
                 if(!snap.exists()){
-                  //console.log('Query ' + query + ' not found');
-                  nonExisitingNums.push(parseInt(query,10));
-                  if((y-x)===0){
-                    clearTimeout(timeout);
-                    firebase.database().ref('tests/valid').set(existingNums).then(()=>{
-                      console.log('DOne');
-                    });
-                    firebase.database().ref('tests/invalid').set(nonExisitingNums).then(()=>{
-                      console.log('DOne');
-                    });
-                    NativeStorage.setItem('contacts',{
-                      existingNums:existingNums,
-                      nonExisitingNums:nonExisitingNums
-                    });
+                  if(query === '917387920029'){
+                    alert('Something is wrong');
                   }
+                  nonExisitingNums.push(parseInt(query,10));
                 }
                 else{
-                  //console.log('Query ' + query + ' found');
                   console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
                   existingNums.push(parseInt(query,10));
-                  if((y-x)===0){
-                    firebase.database().ref('tests/valid').set(existingNums).then(()=>{
-                      console.log('DOne');
-                    });
-                    firebase.database().ref('tests/invalid').set(nonExisitingNums).then(()=>{
-                      console.log('DOne');
-                    });
-                    //console.log(existingNums);
-                    //console.log(nonExisitingNums)
-                    NativeStorage.setItem('contacts',{
-                      existingNums:existingNums,
-                      nonExisitingNums:nonExisitingNums
-                    });
-                  }
+                }
+                if((y-x)===0){
+                  clearTimeout(timeout);
+                  firebase.database().ref('tests/valid').set(existingNums).then(()=>{
+                    console.log('DOne');
+                  });
+                  firebase.database().ref('tests/invalid').set(nonExisitingNums).then(()=>{
+                    console.log('DOne');
+                  });
+                  //console.log(existingNums);
+                  //console.log(nonExisitingNums)
+                  NativeStorage.setItem('contacts',{
+                    existingNums:existingNums,
+                    nonExisitingNums:nonExisitingNums
+                  });
                 }
               },(err)=>{
                 alert(JSON.stringify(err));

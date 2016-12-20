@@ -56,6 +56,7 @@ export class LoginPage {
   }
 
   doGoogleLogin() {
+    this.contact.init();
     this.nav.setRoot(this.main_page.component);
 
 
