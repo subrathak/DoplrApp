@@ -11,12 +11,12 @@
     <ion-slide class="slide-1">
       <ion-row class="intro-image-row">
         <ion-col center width-64 no-padding>
-          <preload-image [ratio]="{w:1, h:1}" src="./assets/images/logo_white.png" alt="app logo" title="ion2FullApp"></preload-image>
+          <preload-image [ratio]="{w:1, h:1}" src="./assets/images/logo_doplr.png" alt="app logo" title="ion2FullApp"></preload-image>
         </ion-col>
       </ion-row>
       <h2 class="main-title">Welcome!</h2>
       <p class="intro-text">
-        This is the new <b>Ionic 2</b> Full App template
+        Share Your Memories with friends on <b>doplr</b> !
       </p>
     </ion-slide>
     <ion-slide class="slide-2">
@@ -30,7 +30,7 @@
         We should get started.
       </p>
       <p class="intro-text">
-        Here we have a beautiful walkthrough
+        Life if so much more fun with friends !
       </p>
     </ion-slide>
     <ion-slide class="slide-3">
@@ -41,10 +41,22 @@
       </ion-row>
       <h2 class="main-title">Get ready!</h2>
       <p class="intro-text">
-        Soon your app will look and feel awesome!
+        Doplr Rewarded !
       </p>
     </ion-slide>
     <ion-slide class="slide-4">
+      <form class="login-form auth-form" [formGroup]="otp" (ngSubmit)="doLogin(otp.value)">
+        <ion-item>
+          <ion-input type="number" placeholder="Phone" formControlName="phone"></ion-input>
+        </ion-item>
+        <button ion-button block class="auth-action-button login-button" type="submit">Log in</button>
+        <div class="button-bar">
+          <!-- <button ion-button primary (click)="goToLogin()">Log in</button>
+          <button ion-button primary (click)="goToSignup()">Sign up</button> -->
+          <!-- <button ion-button block class="auth-action-button login-button" type="submit" [disabled]="!login.valid">Log in</button> -->
+
+        </div>
+      </form>
       <ion-row class="intro-image-row">
         <ion-col center width-64 no-padding>
           <preload-image [ratio]="{w:1, h:1}" src="./assets/images/slide-4-img.png" alt="slide 4 img" title="ion2FullApp"></preload-image>
@@ -57,10 +69,8 @@
       <p class="intro-text">
         We are ready to rock!
       </p>
-      <div class="button-bar">
-        <button ion-button primary (click)="goToLogin()">Log in</button>
-        <button ion-button primary (click)="goToSignup()">Sign up</button>
-      </div>
+
+
     </ion-slide>
   </ion-slides>
 </ion-content>

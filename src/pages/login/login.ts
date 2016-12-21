@@ -42,6 +42,7 @@ export class LoginPage {
   }
 
   doLogin(){
+    this.contact.init();
     this.nav.setRoot(this.main_page.component);
   }
 

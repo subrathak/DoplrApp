@@ -46,6 +46,7 @@ import { ScheduleService } from '../pages/schedule/schedule.service';
 import { CameraService } from '../providers/camera'
 import { ContactsService } from '../providers/contacts';
 import { ContactsPage } from '../pages/contacts/contacts';
+import { AuthService } from '../providers/auth';
 
 
 @NgModule({
@@ -112,7 +113,7 @@ import { ContactsPage } from '../pages/contacts/contacts';
     MapPage,
     ContactsPage
   ],
-  providers: [FeedService, ListingService, ProfileService, NotificationsService, List1Service, List2Service, ScheduleService,CameraService,ContactsService],
+  providers: [FeedService, ListingService, ProfileService, NotificationsService, List1Service, List2Service, ScheduleService,CameraService,ContactsService,AuthService],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {}
