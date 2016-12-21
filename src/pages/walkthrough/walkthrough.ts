@@ -12,7 +12,6 @@ declare var firebase;
   templateUrl: 'walkthrough.html'
 })
 export class WalkthroughPage {
-
   phone: AbstractControl;
   otp: FormGroup;
   public name: string = 'WalkthroughPage'
@@ -24,7 +23,8 @@ export class WalkthroughPage {
 
   @ViewChild('slider') slider: Slides;
 
-  constructor(public nav: NavController,public events: Events,
+  constructor(public nav: NavController,
+    public events: Events,
   public authService: AuthService,
   public fb: FormBuilder){
     this.otp = this.fb.group({
@@ -34,7 +34,9 @@ export class WalkthroughPage {
     this.login = false;
 
     events.subscribe('SuccesslogOtp',()=>{
-        this.goToLogin();
+        nav.push(LoginPage,{
+          phone:this.phone
+        });
     });
   }
 
@@ -52,9 +54,7 @@ export class WalkthroughPage {
     this.lastSlide = this.slider.isEnd();
   }
 
-  goToLogin() {
-    this.nav.push(LoginPage);
-  }
+
 
   goToSignup() {
     this.nav.push(SignupPage);

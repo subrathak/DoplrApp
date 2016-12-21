@@ -3,6 +3,7 @@
   import { GooglePlus, Facebook, NativeStorage } from 'ionic-native';
   import { Events } from 'ionic-angular'
   import { HTTP } from 'ionic-native';
+
   declare var firebase;
 
 
@@ -43,20 +44,56 @@
       this.makePostRequest(phone);
     }
 
-    //
-    // makeGetRequest() {
-    //     HTTP.get("http://46.101.189.72/otp/sendOTP")
-    //     .subscribe(data => {
-    //         var alert = Alert.create({
-    //             title: "Your IP Address",
-    //             subTitle: data.json().origin,
-    //             buttons: ["close"]
-    //         });
-    //         this.nav.present(alert);
-    //     }, error => {
-    //         console.log(JSON.stringify(error.json()));
-    //     });
-    // }
+    verifyOTP(otp:String){
+      HTTP.post("http://46.101.189.72/otp/verifyOTP", {otp:otp},{})
+      .then((data) => {
+        if(data.status===200){
+          this.firebaseCustomLogin(data.data.token);
+          this.events.publish('otpVerified');
+          NativeStorage.setItem('serverTokens', {token: data.data.token, refreshToken: data.data.refreshToken})
+  .then(
+    () => console.log('Stored item!'),
+    error => console.error('Error storing item', error)
+  );
+        }
+      }, (error) => {
+          console.log(JSON.stringify(error));
+      });
+
+    }
+
+    sendUserDataServer(name:String,
+       gender:String,phone:String){
+         let token =" ";
+         let refreshToken = " ";
+         NativeStorage.getItem('serverTokens')
+           .then(
+             (data) => {   token = data.data.token;
+                refreshToken = data.data.refreshToken;
+                },
+             (error) => console.error(error)
+           );
+      HTTP.post("http://46.101.189.72/otp/verifyOTP", {name:name,
+                                                       gender:gender,
+                                                      verifiedPhone:phone,
+                                                      refreshToken:refreshToken},{})
+      .then((data) => {
+        if(data.status===200){
+          // this.firebaseCustomLogin(data.data.token);
+          this.events.publish('accountCreated');
+        }
+      }, (error) => {
+          console.log(JSON.stringify(error));
+      });
+    }
+
+    firebaseCustomLogin(token){
+      firebase.auth().signInWithCustomToken(token).catch(function(error) {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+  // ...
+    });
+  }
 
     makePostRequest(phone) {
         HTTP.post("http://46.101.189.72/otp/sendOTP", {phone:phone},{})
@@ -64,25 +101,10 @@
           if(data.status===200){
             this.events.publish('SuccesslogOtp');
           }
-
-            // var alert = Alert.create({
-            //     title: "Data String",
-            //     subTitle: data.json().data,
-            //     buttons: ["close"]
-            // });
-            // this.nav.present(alert);
         }, (error) => {
             console.log(JSON.stringify(error));
         });
     }
-
-    // addUser(username: string, phone: string, uid: string) {
-    //     this.usersRef.child(uid).update({
-    //         username: username,
-    //         phone: phone
-    //     });
-    // }
-
     //Auth Observer
     authObserver(callback){
       return firebase.auth().onAuthStateChanged(function(user){
