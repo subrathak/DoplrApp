@@ -5,7 +5,8 @@ import { Validators, FormGroup, FormControl } from '@angular/forms';
 import { TabsNavigationPage } from '../tabs-navigation/tabs-navigation';
 import { SignupPage } from '../signup/signup';
 import { ForgotPasswordPage } from '../forgot-password/forgot-password';
-import { ContactsService } from '../../providers/contacts'
+import { ContactsService } from '../../providers/contacts';
+declare var firebase;
 
 
 @Component({
@@ -56,10 +57,10 @@ export class LoginPage {
   }
 
   doGoogleLogin() {
-    this.contact.init();
-    this.nav.setRoot(this.main_page.component);
-
-
+    firebase.auth().signInWithEmailAndPassword("b@a.com","abcdef").then((a)=>{
+      this.contact.init();
+      this.nav.setRoot(this.main_page.component);
+    });
     /*.then((user)=>{
       this.loading.dismiss();
       alert("Login Successful");

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
-import { Contacts, Contact, ContactField, ContactName,NativeStorage } from 'ionic-native';
+import { Contacts, Contact, ContactField, ContactName,NativeStorage,HTTP } from 'ionic-native';
 import { Events } from 'ionic-angular'
 import 'rxjs/add/operator/map';
 
@@ -116,7 +115,13 @@ export class ContactsService {
       alert(err);
     });
   }
-
+  drop(location,image){
+    HTTP.post('',{
+      coords:location
+    },{}).then((res)=>{
+      this.events.publish('dropComplete',res,image);
+    })
+  }
   generateContacts(){
     NativeStorage.getItem("contacts").then((contacts)=>{
       console.log(contacts);
