@@ -1,16 +1,18 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, Slides } from 'ionic-angular';
+import { NavController, Slides,Events } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators, AbstractControl} from '@angular/forms';
 
 import { LoginPage } from '../login/login';
 import { SignupPage } from '../signup/signup';
 import { AuthService } from '../../providers/auth';
+declare var firebase;
 
 @Component({
   selector: 'walkthrough-page',
   templateUrl: 'walkthrough.html'
 })
 export class WalkthroughPage {
+
   phone: AbstractControl;
   otp: FormGroup;
   public name: string = 'WalkthroughPage'
@@ -22,7 +24,7 @@ export class WalkthroughPage {
 
   @ViewChild('slider') slider: Slides;
 
-  constructor(public nav: NavController,
+  constructor(public nav: NavController,public events: Events,
   public authService: AuthService,
   public fb: FormBuilder){
     this.otp = this.fb.group({
@@ -31,6 +33,9 @@ export class WalkthroughPage {
     this.phone = this.otp.controls['phone'];
     this.login = false;
 
+    events.subscribe('SuccesslogOtp',()=>{
+        this.goToLogin();
+    });
   }
 
   skipIntro() {
@@ -56,8 +61,9 @@ export class WalkthroughPage {
   }
 
   doLogin(signInForm: any){
+    firebase.auth().signInWithEmailAndPassword("b@a.com","abcdef");
     this.authService.getOTP(signInForm.phone);
-    this.goToLogin();
+
 
   }
 }

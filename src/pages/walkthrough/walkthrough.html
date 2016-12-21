@@ -45,18 +45,7 @@
       </p>
     </ion-slide>
     <ion-slide class="slide-4">
-      <form class="login-form auth-form" [formGroup]="otp" (ngSubmit)="doLogin(otp.value)">
-        <ion-item>
-          <ion-input type="number" placeholder="Phone" formControlName="phone"></ion-input>
-        </ion-item>
-        <button ion-button block class="auth-action-button login-button" type="submit">Log in</button>
-        <div class="button-bar">
-          <!-- <button ion-button primary (click)="goToLogin()">Log in</button>
-          <button ion-button primary (click)="goToSignup()">Sign up</button> -->
-          <!-- <button ion-button block class="auth-action-button login-button" type="submit" [disabled]="!login.valid">Log in</button> -->
 
-        </div>
-      </form>
       <ion-row class="intro-image-row">
         <ion-col center width-64 no-padding>
           <preload-image [ratio]="{w:1, h:1}" src="./assets/images/slide-4-img.png" alt="slide 4 img" title="ion2FullApp"></preload-image>
@@ -69,6 +58,18 @@
       <p class="intro-text">
         We are ready to rock!
       </p>
+      <form class="login-form auth-form" [formGroup]="otp" (ngSubmit)="doLogin(otp.value)">
+        <ion-item>
+          <ion-input type="number" placeholder="Phone" formControlName="phone"></ion-input>
+        </ion-item>
+        <button ion-button block class="auth-action-button login-button" type="submit">Log in</button>
+        <div class="button-bar">
+          <!-- <button ion-button primary (click)="goToLogin()">Log in</button>
+          <button ion-button primary (click)="goToSignup()">Sign up</button> -->
+          <!-- <button ion-button block class="auth-action-button login-button" type="submit" [disabled]="!login.valid">Log in</button> -->
+
+        </div>
+      </form>
 
 
     </ion-slide>

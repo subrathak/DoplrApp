@@ -61,7 +61,10 @@
     makePostRequest(phone) {
         HTTP.post("http://46.101.189.72/otp/sendOTP", {phone:phone},{})
         .then((data) => {
-          console.log(JSON.stringify(data));
+          if(data.status===200){
+            this.events.publish('SuccesslogOtp');
+          }
+
             // var alert = Alert.create({
             //     title: "Data String",
             //     subTitle: data.json().data,
