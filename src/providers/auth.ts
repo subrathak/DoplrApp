@@ -45,10 +45,13 @@
     }
 
     verifyOTP(otp:String){
-      HTTP.post("http://46.101.189.72/otp/verifyOTP", {otp:otp},{})
+      HTTP.post("http://46.101.189.72/otp/verifyOTP", {otp:otp},{Accept: 'application/json'})
       .then((data) => {
+        let newData = JSON.parse(data.data);
         if(data.status===200){
-          this.firebaseCustomLogin(data.data.token);
+          console.log(newData.token);
+          console.log(JSON.stringify(data.data));
+          this.firebaseCustomLogin(newData.token);
           this.events.publish('otpVerified');
           NativeStorage.setItem('serverTokens', {token: data.data.token, refreshToken: data.data.refreshToken})
   .then(
@@ -88,7 +91,9 @@
     }
 
     firebaseCustomLogin(token){
-      firebase.auth().signInWithCustomToken(token).catch(function(error) {
+      firebase.auth().signInWithCustomToken(token).then(()=>{
+        alert('Firebase success');
+      }).catch(function(error) {
         var errorCode = error.code;
         var errorMessage = error.message;
   // ...
