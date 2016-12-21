@@ -1,0 +1,26 @@
+<!--
+  Generated template for the Contacts page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Select Friends</ion-title>
+    <ion-buttons end>
+      <button ion-button (click)="doDrop()"><ion-icon name="add"></ion-icon>Drop</button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <ion-list>
+    <ion-item *ngFor="let contact of contacts">
+      <ion-label>{{contact.name}}({{contact.phone}})</ion-label>
+      <ion-checkbox color="dark" checked="false"></ion-checkbox>
+    </ion-item>
+  </ion-list>
+</ion-content>

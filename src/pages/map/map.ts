@@ -7,6 +7,8 @@ import {
  Geolocation
 } from 'ionic-native';
 import { LoginPage } from '../login/login';
+import { ContactsPage } from '../contacts/contacts';
+import { Events } from 'ionic-angular'
 
 
 import { CameraService } from '../../providers/camera'
@@ -24,11 +26,15 @@ import { CameraService } from '../../providers/camera'
 export class MapPage {
   public map: GoogleMap;
   public loading: any;
-  constructor(public navCtrl: NavController,public camera:CameraService,public loadingController: LoadingController) {
+  constructor(public navCtrl: NavController,public camera:CameraService,public loadingController: LoadingController,public events:Events) {
     this.loading = this.loadingController.create({
-      content:''
+      content:'',
+      duration:3600
     });
     this.loading.present();
+    events.subscribe('uploadDone',()=>{
+      navCtrl.push(ContactsPage);
+    });
   }
 
   ngAfterViewInit() {
@@ -67,6 +73,7 @@ export class MapPage {
         });
       })
     }).catch((err)=>{
+      this.loading.dismiss();
       alert(err);
     });
   }

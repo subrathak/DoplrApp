@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import { Contacts, Contact, ContactField, ContactName,NativeStorage } from 'ionic-native';
+import { Events } from 'ionic-angular'
 import 'rxjs/add/operator/map';
 
 declare var firebase;
@@ -13,7 +14,7 @@ declare var firebase;
 */
 @Injectable()
 export class ContactsService {
-  constructor(public http: Http) {
+  constructor(public events:Events) {
 
   }
   sync(){
@@ -39,7 +40,7 @@ export class ContactsService {
     let existingNums = [];
     let nonExisitingNums = [];
     let x = 0,y = 0;
-    let flag = 0;
+    let id = 0;
     let ref:any=firebase.database().ref('/');
     let timeout = setTimeout(function(){
       ref.child('users').off();
@@ -63,6 +64,7 @@ export class ContactsService {
         }
         let phoneLength = phone.length
         for(let j = 0;j<phoneLength;j++){
+          let flag = false;
           let query = this.numParse(phone[j].value.split(' ').join(""));
           let prev = '0';
           if(j){
@@ -79,14 +81,14 @@ export class ContactsService {
                 x++;
                 console.log(y-x);
                 if(!snap.exists()){
-                  if(query === '917387920029'){
-                    alert('Something is wrong');
-                  }
                   nonExisitingNums.push(parseInt(query,10));
                 }
                 else{
-                  console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
-                  existingNums.push(parseInt(query,10));
+                  existingNums.push({
+                    id:++id,
+                    name:contacts[i].displayName,
+                    phone:parseInt(query,10)
+                  });
                 }
                 if((y-x)===0){
                   clearTimeout(timeout);
@@ -113,5 +115,14 @@ export class ContactsService {
     }).catch((err)=>{
       alert(err);
     });
+  }
+
+  generateContacts(){
+    NativeStorage.getItem("contacts").then((contacts)=>{
+      console.log(contacts);
+      this.events.publish('gotContacts',contacts);
+    }).catch((err)=>{
+      alert(JSON.stringify(err))
+    })
   }
 }

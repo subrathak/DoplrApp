@@ -45,7 +45,7 @@ import { List2Service } from '../pages/list-2/list-2.service';
 import { ScheduleService } from '../pages/schedule/schedule.service';
 import { CameraService } from '../providers/camera'
 import { ContactsService } from '../providers/contacts';
-
+import { ContactsPage } from '../pages/contacts/contacts';
 
 
 @NgModule({
@@ -73,6 +73,7 @@ import { ContactsService } from '../providers/contacts';
     TermsOfServicePage,
     PrivacyPolicyPage,
     MapPage,
+    ContactsPage,
     PreloadImage,
     BackgroundImage,
     ShowHideContainer,
@@ -108,7 +109,8 @@ import { ContactsService } from '../providers/contacts';
     FiltersPage,
     TermsOfServicePage,
     PrivacyPolicyPage,
-    MapPage
+    MapPage,
+    ContactsPage
   ],
   providers: [FeedService, ListingService, ProfileService, NotificationsService, List1Service, List2Service, ScheduleService,CameraService,ContactsService],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]

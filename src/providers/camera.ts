@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import { Camera } from 'ionic-native';
 import { UUID } from 'angular2-uuid';
+import { Events } from 'ionic-angular'
 import 'rxjs/add/operator/map';
 declare var firebase;
 
@@ -16,7 +17,7 @@ declare var firebase;
 export class CameraService {
   storage = firebase.storage();
   storageRef = this.storage.ref();
-  constructor(public http: Http) {
+  constructor(public http: Http,public events:Events) {
 
   }
   takePicture(){
@@ -32,6 +33,7 @@ export class CameraService {
     let uploadTask;
     Camera.getPicture(options).then((image)=>{
       uploadTask = ref.putString(image,'base64').then((snap)=>{
+        this.events.publish('uploadDone');
         alert('File Uploaded');
       });
       uploadTask.on('state_changed',(snap)=>{
