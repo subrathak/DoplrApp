@@ -96,8 +96,10 @@
   }
 
     makePostRequest(phone) {
+      this.events.publish('SuccesslogOtp');
         HTTP.post("http://46.101.189.72/otp/sendOTP", {phone:phone},{})
         .then((data) => {
+          console.log(data.status);
           if(data.status===200){
             this.events.publish('SuccesslogOtp');
           }

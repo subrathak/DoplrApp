@@ -7,6 +7,7 @@ import { FormsPage } from '../pages/forms/forms';
 import { LayoutsPage } from '../pages/layouts/layouts';
 import { WalkthroughPage } from '../pages/walkthrough/walkthrough';
 import { SettingsPage } from '../pages/settings/settings';
+import {Push} from 'ionic-native';
 
 @Component({
   selector: 'app-root',
@@ -30,6 +31,31 @@ export class MyApp {
   ) {
 
     platform.ready().then(() => {
+
+      StatusBar.styleDefault();
+      var push = Push.init({
+        android: {
+          senderID: "446843274237"
+        },
+        ios: {
+          alert: "true",
+          badge: true,
+          sound: 'false'
+        },
+        windows: {}
+      });
+      push.on('registration', (data) => {
+        console.log(data.registrationId);
+        console.log(data.registrationId.toString());
+      });
+      push.on('notification', (data) => {
+        console.log(data);
+        alert("Hi, Am a push notification from Doplr");
+      });
+      push.on('error', (e) => {
+        console.log(e.message);
+
+    });
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
       Splashscreen.hide();
@@ -47,7 +73,7 @@ export class MyApp {
     ];
   }
   ngOnInit(){
-    
+
   }
 
   openPage(page) {

@@ -14,38 +14,43 @@ import { AuthService } from '../../providers/auth'
   templateUrl: 'login.html'
 })
 export class LoginPage {
+  name: AbstractControl;
+  otp: AbstractControl;
   verifyOTP: FormGroup;
   main_page: { component: any };
   loading: any;
   gender: "Female";
-  name:String;
+  alernateName:String;
 
   constructor(public nav: NavController,
     public loadingController: LoadingController,
     public events: Events,
     public contact: ContactsService,
     public navParams:NavParams,
-    public authService: AuthService) {
+    public authService: AuthService,
+    public fb: FormBuilder){
     this.main_page = { component: TabsNavigationPage };
-    this.verifyOTP = new FormGroup({
-      name: new FormControl('', Validators.required),
-      otp: new FormControl('test', Validators.required)
-    });
-
+    this.verifyOTP = this.fb.group({
+      'name': ['', Validators.compose([Validators.required, Validators.minLength(10)])],
+      'otp': ['', Validators.compose([Validators.required, Validators.minLength(10)])]
+});
+this.name = this.verifyOTP.controls['name'];
     events.subscribe('err',(err)=>{
       this.loading.dismiss();
       alert(err+' Login Failed');
     });
     events.subscribe('otpVerified',()=>{
-      authService.sendUserDataServer(this.name,this.gender,this.navParams.get('phone'));
+      authService.sendUserDataServer(this.alernateName,this.gender,this.navParams.get('phone'));
     });
     events.subscribe('accountCreated',()=>{
         this.gotoMainActivity();
     });
   }
+
   selectGender(value){
     this.gender = value;
   }
+
   doLogin(verifyOTPform: any){
     this.authService.verifyOTP(verifyOTPform.otp);
     // this.nav.setRoot(this.main_page.component);
@@ -54,8 +59,5 @@ export class LoginPage {
 gotoMainActivity(){
   this.contact.init();
   this.nav.setRoot(this.main_page.component);
-
 }
-
-
 }

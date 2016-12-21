@@ -7,7 +7,7 @@
 <ion-content class="login-content auth-content">
   <form class="login-form auth-form" [formGroup]="verifyOTP" (ngSubmit)="doLogin(verifyOTP.value)">
     <ion-item>
-      <ion-input type="name" *ngModel={{name}} placeholder="Name" formControlName="name"></ion-input>
+      <ion-input type="name" [value]="alternateName" placeholder="Name" formControlName="name"></ion-input>
     </ion-item>
     <ion-list radio-group>
       <ion-item>
@@ -21,10 +21,10 @@
     </ion-list>
     <show-hide-container>
       <ion-item>
-        <ion-input type="password" placeholder="OTP" formControlName="otpTextView" show-hide-input></ion-input>
+        <ion-input type="password" placeholder="OTP" formControlName="otp" show-hide-input></ion-input>
       </ion-item>
     </show-hide-container>
-    <button ion-button block class="auth-action-button login-button" type="submit" [disabled]="!login.valid">Finish</button>
+    <button ion-button block class="auth-action-button login-button" type="submit">Finish</button>
   </form>
   <!-- <ion-row class="alt-options">
     <ion-col no-padding width-50>
