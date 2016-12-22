@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
-import { Camera } from 'ionic-native';
+import { Camera,Geolocation } from 'ionic-native';
 import { UUID } from 'angular2-uuid';
 import { Events } from 'ionic-angular'
 import 'rxjs/add/operator/map';
@@ -32,14 +32,24 @@ export class CameraService {
     let ref = this.storageRef.child('drops/'+uuid);
     let uploadTask;
     Camera.getPicture(options).then((image)=>{
-      uploadTask = ref.putString(image,'base64').then((snap)=>{
-        this.events.publish('uploadDone');
-        alert('File Uploaded');
-      });
-      uploadTask.on('state_changed',(snap)=>{
-        let progress = (snap.bytesTransferred / snap.totalBytes) * 100;
-        console.log('Upload is ' + progress + '% done');
-      });
+      Geolocation.getCurrentPosition({
+        maximumAge:0,
+        timeout:3000,
+        enableHighAccuracy:true
+      }).then((location)=>{
+        this.events.publish('picTaken',image,location);
+      }).catch((err)=>{
+        alert(JSON.stringify(err));
+      })
+      this.events.subscribe('dropComplete',(res,imag)=>{
+        if(res.success){
+          uploadTask = ref.putString(imag,'base64').then((snap)=>{
+            alert('File Uploaded');
+          });
+        }else{
+          alert(res.error);
+        }
+      })
     }),(err)=>{
       alert(err);
     };

@@ -73,7 +73,6 @@ export class MyApp {
     ];
   }
   ngOnInit(){
-
   }
 
   openPage(page) {

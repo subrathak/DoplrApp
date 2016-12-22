@@ -32,8 +32,11 @@ export class MapPage {
       duration:3600
     });
     this.loading.present();
-    events.subscribe('uploadDone',()=>{
-      navCtrl.push(ContactsPage);
+    events.subscribe('picTaken',(image,location)=>{
+      navCtrl.push(ContactsPage,{
+        imageData:image,
+        location:location
+      });
     });
   }
 

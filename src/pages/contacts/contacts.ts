@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController,NavParams } from 'ionic-angular';
 import { Events } from 'ionic-angular'
 import { ContactsService } from '../../providers/contacts'
 
@@ -16,9 +16,10 @@ import { ContactsService } from '../../providers/contacts'
 export class ContactsPage {
   contacts = [];
   selectedContacts = [];
-  constructor(public navCtrl: NavController,public events: Events,public contact:ContactsService) {
+  constructor(public navCtrl: NavController,public events: Events,public contact:ContactsService,public navParams: NavParams) {
     events.subscribe('gotContacts',(contacts)=>{
-      this.contacts = contacts;
+      events.unsubscribe('gotContacts');
+      this.contacts = contacts[0].existingNums;
     });
   }
   ngOnInit(){
@@ -39,7 +40,7 @@ export class ContactsPage {
   }
 
   doDrop(){
-    console.log(this.contacts);
+    this.contact.drop(this.navParams.get('location'),this.navParams.get('imageData'));
     this.navCtrl.pop();
   }
 }

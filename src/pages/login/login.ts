@@ -7,6 +7,7 @@ import { ForgotPasswordPage } from '../forgot-password/forgot-password';
 import { ContactsService } from '../../providers/contacts'
 import { NativeStorage } from 'ionic-native';
 import { AuthService } from '../../providers/auth'
+declare var firebase;
 
 
 @Component({
@@ -53,8 +54,18 @@ this.name = this.verifyOTP.controls['name'];
 
   doLogin(verifyOTPform: any){
     this.authService.verifyOTP(verifyOTPform.otp);
-    // this.nav.setRoot(this.main_page.component);
+    this.nav.setRoot(this.main_page.component);
+
   }
+
+  doGoogleLogin() {
+    firebase.auth().signInWithEmailAndPassword("b@a.com","abcdef").then((a)=>{
+      this.contact.init();
+      this.nav.setRoot(this.main_page.component);
+    });
+
+  }
+
 
 gotoMainActivity(){
   this.contact.init();
