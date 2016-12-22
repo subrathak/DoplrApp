@@ -7,6 +7,7 @@ import { FormsPage } from '../pages/forms/forms';
 import { LayoutsPage } from '../pages/layouts/layouts';
 import { WalkthroughPage } from '../pages/walkthrough/walkthrough';
 import { SettingsPage } from '../pages/settings/settings';
+import { HTTP } from 'ionic-native';
 
 @Component({
   selector: 'app-root',
@@ -47,6 +48,7 @@ export class MyApp {
     ];
   }
   ngOnInit(){
+    
   }
 
   openPage(page) {

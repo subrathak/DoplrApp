@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Contacts, Contact, ContactField, ContactName,NativeStorage,HTTP } from 'ionic-native';
 import { Events } from 'ionic-angular'
 import 'rxjs/add/operator/map';
+import { UUID } from 'angular2-uuid';
 
 declare var firebase;
 
@@ -13,6 +14,8 @@ declare var firebase;
 */
 @Injectable()
 export class ContactsService {
+  storage = firebase.storage();
+  storageRef = this.storage.ref();
   constructor(public events:Events) {
 
   }
@@ -115,12 +118,57 @@ export class ContactsService {
       alert(err);
     });
   }
-  drop(location,image){
-    HTTP.post('',{
-      coords:location
-    },{}).then((res)=>{
-      this.events.publish('dropComplete',res,image);
+  drop(latitude,longitude,image,friends){
+    let uuid = UUID.UUID();
+    let ref = this.storageRef.child('drops/'+uuid);
+    console.log('drop auth.ts ' + latitude + ' ' + longitude);
+    firebase.auth().currentUser.getToken(true).then((token)=>{
+      HTTP.post('http://46.101.189.72/location/addDrop',{
+        coords:{
+          latitude:latitude,
+          longitude:longitude,
+        },
+        token:token,
+        friends:friends
+      },{}).then((res)=>{
+        try{
+          res.data = JSON.parse(res.data);
+        }catch(e){
+          console.log(e.stackTrace);
+          console.log(e);
+        }
+        if(res.status===200){
+          setTimeout(function(){
+            console.log(res.data);
+          },150)
+          ref.putString(image,'base64').then((snap)=>{
+            alert('File Uploaded');
+          }).catch((err)=>{
+            alert("Error in file upload");
+          });
+        }else{
+          console.log(res.status);
+          alert(res.status);
+          setTimeout(function(){
+            console.log(res.data.error);
+          },150)
+        }
+      }).catch((err)=>{
+        try{
+          console.log("Try Block Started");
+          console.log(err.status);
+          console.log(err.error);
+          let error = JSON.parse(err.error);
+          console.log('Parsing Done');
+          console.log(error.error);
+        }catch(e){
+          console.log('err');
+        }
+      })
+    }).catch((err)=>{
+      console.log(JSON.stringify(err));
     })
+
   }
   generateContacts(){
     NativeStorage.getItem("contacts").then((contacts)=>{

@@ -97,4 +97,5 @@
         <variable name="APP_NAME" value="doplr" />
     </plugin>
     <plugin name="cordova-plugin-contacts" spec="~2.2.1" />
+    <plugin name="cordova-plugin-http" spec="~1.2.0" />
 </widget>
