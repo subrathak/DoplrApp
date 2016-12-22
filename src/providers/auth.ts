@@ -1,8 +1,8 @@
   import { Injectable } from '@angular/core';
   import 'rxjs/add/operator/map';
   import { GooglePlus, Facebook, NativeStorage } from 'ionic-native';
-  import { Events } from 'ionic-angular'
-  import { HTTP } from 'ionic-native';
+  import { Events } from 'ionic-angular';
+  import { Http, Response, Headers, RequestOptions } from '@angular/http';
 
   declare var firebase;
 
@@ -17,7 +17,8 @@
   export class AuthService {
     usersRef: any = firebase.database().ref('users');
 
-    constructor(public events: Events) {
+    constructor(public events: Events,public http: Http) {
+      this.http = http;
     }
     //LogIn
     login(method:String,email:String,password:String,callback){
@@ -41,29 +42,48 @@
     }
 
     getOTP(phone:String){
-      this.makePostRequest(phone);
+
+      // this.makePostRequest(phone);
+      this.http.post("http://46.101.189.72/otp/sendOTP", {phone:phone})
+      .subscribe(data => {
+        console.log(data.status);
+        if(data.status===200){
+          this.events.publish('SuccesslogOtp');
+        }
+        alert(data.json().data);
+      }, error => {
+          console.log(error);
+      });
     }
+
 
     verifyOTP(otp:String){
-      HTTP.post("http://46.101.189.72/otp/verifyOTP", {otp:otp},{Accept: 'application/json'})
-      .then((data) => {
-        let newData = JSON.parse(data.data);
+      this.http.post("http://46.101.189.72/otp/verifyOTP", {otp:otp}) // ...using post request
+      .subscribe(data => {
+        console.log(data.status);
         if(data.status===200){
-          console.log(newData.token);
-          console.log(JSON.stringify(data.data));
-          this.firebaseCustomLogin(newData.token);
-          this.events.publish('otpVerified');
-          NativeStorage.setItem('serverTokens', {token: data.data.token, refreshToken: data.data.refreshToken})
-  .then(
-    () => console.log('Stored item!'),
-    error => console.error('Error storing item', error)
-  );
+          this.events.publish('SuccesslogOtp');
         }
-      }, (error) => {
-          console.log(JSON.stringify(error));
+        console.log('Verify OTP ALERT');
+        try{
+          console.log(data.toString());
+          console.log('a');
+          console.log(data.json().token);
+          console.log(data.json().success);
+        }catch(e){
+          console.log('exceptoion');
+        }
+        this.firebaseCustomLogin(data.json().token);
+        this.events.publish('otpVerified');
+      }, error => {
+          try{
+            console.log('Verify OTP');
+            console.log(JSON.stringify(error));
+          }catch(e){
+            console.log("exception")
+          }
       });
-
-    }
+  }
 
     sendUserDataServer(name:String,
        gender:String,phone:String){
@@ -74,19 +94,27 @@
              (data) => {   token = data.data.token;
                 refreshToken = data.data.refreshToken;
                 },
-             (error) => console.error(error)
+             (error) => {
+               console.log('SENDUSERDATA ERROR NATIVESTORAGE');
+               console.error(error)
+             }
            );
-      HTTP.post("http://46.101.189.72/otp/verifyOTP", {name:name,
+      this.http.post("http://46.101.189.72/otp/verifyOTP", {name:name,
                                                        gender:gender,
                                                       verifiedPhone:phone,
                                                       refreshToken:refreshToken},{})
-      .then((data) => {
+      .map((data) => {
         if(data.status===200){
           // this.firebaseCustomLogin(data.data.token);
           this.events.publish('accountCreated');
         }
       }, (error) => {
-          console.log(JSON.stringify(error));
+        console.log('SENDUSERDATA ERROR');
+          try{
+            console.log(JSON.stringify(error));
+          }catch(e){
+            console.log("exception senduserdata");
+          }
       });
     }
 
@@ -96,22 +124,26 @@
       }).catch(function(error) {
         var errorCode = error.code;
         var errorMessage = error.message;
-  // ...
+        console.log('Firebase giving me errors');
+        console.log(error.message);
+        console.log(error.code);
     });
   }
 
-    makePostRequest(phone) {
-      this.events.publish('SuccesslogOtp');
-        HTTP.post("http://46.101.189.72/otp/sendOTP", {phone:phone},{})
-        .then((data) => {
-          console.log(data.status);
-          if(data.status===200){
-            this.events.publish('SuccesslogOtp');
-          }
-        }, (error) => {
-            console.log(JSON.stringify(error));
-        });
-    }
+    // makePostRequest(phone) {
+    //   // this.events.publish('SuccesslogOtp');
+    //   let headers      = new Headers({ 'Content-Type': 'application/json' }); // ... Set content type to JSON
+    //   let options       = new RequestOptions({ headers: headers });
+    //     this.http.post("http://46.101.189.72/otp/sendOTP", {phone:phone},options)
+    //     .map((data) => {
+    //       console.log(data.status);
+    //       if(data.status===200){
+    //         this.events.publish('SuccesslogOtp');
+    //       }
+    //     }, (error) => {
+    //         console.log(JSON.stringify(error));
+    //     });
+    // }
     //Auth Observer
     authObserver(callback){
       return firebase.auth().onAuthStateChanged(function(user){
