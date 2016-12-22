@@ -41,7 +41,9 @@ this.name = this.verifyOTP.controls['name'];
       alert(err+' Login Failed');
     });
     events.subscribe('otpVerified',()=>{
-      authService.sendUserDataServer(this.alernateName,this.gender,this.navParams.get('phone'));
+      console.log("Calling sendUserDataServer");
+      alert("sendUserDataServer");
+      this.authService.sendUserDataServer(this.alernateName,this.gender,this.navParams.get('phone'));
     });
     events.subscribe('accountCreated',()=>{
         this.gotoMainActivity();
@@ -58,13 +60,13 @@ this.name = this.verifyOTP.controls['name'];
 
   }
 
-  doGoogleLogin() {
-    firebase.auth().signInWithEmailAndPassword("b@a.com","abcdef").then((a)=>{
-      this.contact.init();
-      this.nav.setRoot(this.main_page.component);
-    });
-
-  }
+  // doGoogleLogin() {
+  //   firebase.auth().signInWithEmailAndPassword("b@a.com","abcdef").then((a)=>{
+  //     this.contact.init();
+  //     this.nav.setRoot(this.main_page.component);
+  //   });
+  //
+  // }
 
 
 gotoMainActivity(){

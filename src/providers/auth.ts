@@ -3,6 +3,7 @@
   import { GooglePlus, Facebook, NativeStorage } from 'ionic-native';
   import { Events } from 'ionic-angular';
   import { Http, Response, Headers, RequestOptions } from '@angular/http';
+  import { HTTP } from 'ionic-native';
 
   declare var firebase;
 
@@ -18,7 +19,6 @@
     usersRef: any = firebase.database().ref('users');
 
     constructor(public events: Events,public http: Http) {
-      this.http = http;
     }
     //LogIn
     login(method:String,email:String,password:String,callback){
@@ -85,37 +85,32 @@
       });
   }
 
-    sendUserDataServer(name:String,
-       gender:String,phone:String){
-         let token =" ";
-         let refreshToken = " ";
-         NativeStorage.getItem('serverTokens')
-           .then(
-             (data) => {   token = data.data.token;
-                refreshToken = data.data.refreshToken;
-                },
-             (error) => {
-               console.log('SENDUSERDATA ERROR NATIVESTORAGE');
-               console.error(error)
+    sendUserDataServer(name:String,gender:String,phone:Number){
+      let self = this;
+      console.log('SENDUSERDATASERVER S S S ');
+      console.log(typeof phone);
+         firebase.auth().currentUser.getToken().then((idToken)=>{
+           console.log(idToken);
+           self.http.post("http://46.101.189.72/user/addUser", {name:name,
+                                                            gender:gender,
+                                                           phone:phone,
+                                                           idToken:idToken})
+           .subscribe((data) => {
+             if(data.status===200){
+               // this.firebaseCustomLogin(data.data.token);
+               self.events.publish('accountCreated');
              }
-           );
-      this.http.post("http://46.101.189.72/otp/verifyOTP", {name:name,
-                                                       gender:gender,
-                                                      verifiedPhone:phone,
-                                                      refreshToken:refreshToken},{})
-      .map((data) => {
-        if(data.status===200){
-          // this.firebaseCustomLogin(data.data.token);
-          this.events.publish('accountCreated');
-        }
-      }, (error) => {
-        console.log('SENDUSERDATA ERROR');
-          try{
-            console.log(JSON.stringify(error));
-          }catch(e){
-            console.log("exception senduserdata");
-          }
-      });
+           }, (error) => {
+             console.log('SENDUSERDATA ERROR');
+               try{
+                 console.log(JSON.stringify(error));
+               }catch(e){
+                 console.log("exception senduserdata");
+               }
+           });
+}).catch(function(error) {
+  // Handle error
+});
     }
 
     firebaseCustomLogin(token){
@@ -145,23 +140,7 @@
     //     });
     // }
     //Auth Observer
-    authObserver(callback){
-      return firebase.auth().onAuthStateChanged(function(user){
-        if(user){
-          if(user.emailVerified){
-            callback(user);
-          }
-          else{
-            user.sendEmailVerification().then((success)=>{
-              alert("Verification Email Sent");
-            }),(err)=>{
-              alert("Error");
-            }
-          }
-        }
-        else{
-          callback(user);
-        }
-      });
+    authObserver(){
+      return firebase.auth().onAuthStateChanged();
     }
   }
