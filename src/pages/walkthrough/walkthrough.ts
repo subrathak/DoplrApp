@@ -36,8 +36,9 @@ export class WalkthroughPage {
     this.login = false;
 
     events.subscribe('SuccesslogOtp',()=>{
+      console.log('SUCCESSLOGOTP CALLED');
         nav.push(LoginPage,{
-          phone:this.phone
+          phone:this.phone.value
         });
     });
   }
@@ -75,10 +76,9 @@ export class WalkthroughPage {
   }
 
   doLogin(signInForm: any){
-    firebase.auth().signInWithEmailAndPassword("b@a.com","abcdef");
     // this.makePostRequest(signInForm.phone);
     this.authService.getOTP(signInForm.phone);
-
+    return false;
 
   }
 }

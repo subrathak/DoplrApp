@@ -128,7 +128,7 @@ export class ContactsService {
           latitude:latitude,
           longitude:longitude,
         },
-        token:token,
+        idToken:token,
         friends:friends
       },{}).then((res)=>{
         try{

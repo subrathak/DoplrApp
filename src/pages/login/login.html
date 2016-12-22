@@ -12,11 +12,11 @@
     <ion-list radio-group>
       <ion-item>
         <ion-label>Female</ion-label>
-        <ion-radio value="Female" checked (ionSelect)="selectGender(value)"></ion-radio>
+        <ion-radio value="Female" checked (ionSelect)="selectGender('Female')"></ion-radio>
       </ion-item>
       <ion-item>
         <ion-label>Male</ion-label>
-        <ion-radio value="Male" (ionSelect)="selectGender(value)"></ion-radio>
+        <ion-radio value="Male" (ionSelect)="selectGender('Male')"></ion-radio>
       </ion-item>
     </ion-list>
     <show-hide-container>

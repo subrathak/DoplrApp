@@ -20,7 +20,7 @@ export class LoginPage {
   verifyOTP: FormGroup;
   main_page: { component: any };
   loading: any;
-  gender: "Female";
+  gender: String="Female";
   alernateName:String;
 
   constructor(public nav: NavController,
@@ -32,8 +32,8 @@ export class LoginPage {
     public fb: FormBuilder){
     this.main_page = { component: TabsNavigationPage };
     this.verifyOTP = this.fb.group({
-      'name': ['', Validators.compose([Validators.required, Validators.minLength(10)])],
-      'otp': ['', Validators.compose([Validators.required, Validators.minLength(10)])]
+      name: ['', Validators.compose([Validators.required, Validators.minLength(10)])],
+      otp: ['', Validators.compose([Validators.required, Validators.minLength(10)])]
 });
 this.name = this.verifyOTP.controls['name'];
     events.subscribe('err',(err)=>{
@@ -41,9 +41,7 @@ this.name = this.verifyOTP.controls['name'];
       alert(err+' Login Failed');
     });
     events.subscribe('otpVerified',()=>{
-      console.log("Calling sendUserDataServer");
-      alert("sendUserDataServer");
-      this.authService.sendUserDataServer(this.alernateName,this.gender,this.navParams.get('phone'));
+      this.authService.sendUserDataServer(this.verifyOTP.value.name,this.gender,this.navParams.get('phone'));
     });
     events.subscribe('accountCreated',()=>{
         this.gotoMainActivity();
@@ -56,8 +54,7 @@ this.name = this.verifyOTP.controls['name'];
 
   doLogin(verifyOTPform: any){
     this.authService.verifyOTP(verifyOTPform.otp);
-    this.nav.setRoot(this.main_page.component);
-
+    return false;
   }
 
   // doGoogleLogin() {
