@@ -40,7 +40,7 @@ export class ContactsPage {
   }
 
   doDrop(){
-    this.contact.drop(this.navParams.get('location'),this.navParams.get('imageData'));
+    this.contact.drop(this.navParams.get('latitude'),this.navParams.get('longitude'),this.navParams.get('imageData'),this.selectedContacts);
     this.navCtrl.pop();
   }
 }

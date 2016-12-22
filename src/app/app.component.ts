@@ -8,6 +8,7 @@ import { LayoutsPage } from '../pages/layouts/layouts';
 import { WalkthroughPage } from '../pages/walkthrough/walkthrough';
 import { SettingsPage } from '../pages/settings/settings';
 import {Push} from 'ionic-native';
+import { HTTP } from 'ionic-native';
 
 @Component({
   selector: 'app-root',
@@ -73,6 +74,7 @@ export class MyApp {
     ];
   }
   ngOnInit(){
+
   }
 
   openPage(page) {
@@ -86,6 +88,5 @@ export class MyApp {
     // close the menu when clicking a link from the menu
     this.menu.close();
     // rootNav is now deprecated (since beta 11) (https://forum.ionicframework.com/t/cant-access-rootnav-after-upgrade-to-beta-11/59889)
-    this.app.getRootNav().push(page.component);
-  }
+}
 }

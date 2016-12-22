@@ -32,10 +32,12 @@ export class MapPage {
       duration:3600
     });
     this.loading.present();
-    events.subscribe('picTaken',(image,location)=>{
+    events.subscribe('picTaken',(array)=>{
+      console.log('map.ts ' + array[1] + ' ' + array[2]);
       navCtrl.push(ContactsPage,{
-        imageData:image,
-        location:location
+        imageData:array[0],
+        latitude:array[1],
+        longitude:array[2]
       });
     });
   }
