@@ -7,8 +7,9 @@ import { FormsPage } from '../pages/forms/forms';
 import { LayoutsPage } from '../pages/layouts/layouts';
 import { WalkthroughPage } from '../pages/walkthrough/walkthrough';
 import { SettingsPage } from '../pages/settings/settings';
-import {Push} from 'ionic-native';
 import { HTTP } from 'ionic-native';
+import { Push } from 'ionic-native';
+declare var firebase;
 
 @Component({
   selector: 'app-root',
@@ -36,14 +37,9 @@ export class MyApp {
       StatusBar.styleDefault();
       var push = Push.init({
         android: {
-          senderID: "446843274237"
-        },
-        ios: {
-          alert: "true",
-          badge: true,
-          sound: 'false'
-        },
-        windows: {}
+          senderID: "446843274237",
+          topics:["MyHome"]
+        }
       });
       push.on('registration', (data) => {
         console.log(data.registrationId);
@@ -51,7 +47,7 @@ export class MyApp {
       });
       push.on('notification', (data) => {
         console.log(data);
-        alert("Hi, Am a push notification from Doplr");
+        console.log("Hi, Am a push notification from Doplr");
       });
       push.on('error', (e) => {
         console.log(e.message);

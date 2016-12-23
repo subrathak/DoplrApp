@@ -49,11 +49,13 @@ export class AuthService {
     .subscribe(data => {
       console.log(data.status);
       if(data.status===200){
-        NativeStorage.setItem('tempToken',data.json().tempToken).then((done)=>{
+        NativeStorage.setItem('tempToken',{
+          tempToken:data.json().tempToken
+        }).then((done)=>{
+          alert('publishing now');
           this.events.publish('SuccesslogOtp');
         })
       }
-      alert(data.json().data);
     }, error => {
         console.log(error);
     });
@@ -61,8 +63,11 @@ export class AuthService {
 
 
   verifyOTP(otp:String){
+    let self = this;
     NativeStorage.getItem('tempToken').then((token)=>{
-      HTTP.post("http://46.101.189.72/otp/verifyOTP",{otp:otp,token:token},{}).then((res)=>{
+      console.log(token.tempToken);
+      console.log('Verify Token');
+      HTTP.post("http://46.101.189.72/otp/verifyOTP",{otp:otp,token:token.tempToken},{}).then((res)=>{
         let data = JSON.parse(res.data);
         this.firebaseCustomLogin(data.token);
         alert('Supposed to alert otpVerified');

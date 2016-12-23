@@ -41,6 +41,7 @@ this.name = this.verifyOTP.controls['name'];
       alert(err+' Login Failed');
     });
     events.subscribe('otpVerified',()=>{
+      console.log('otpVerified Subscribed');
       this.authService.sendUserDataServer(this.verifyOTP.value.name,this.gender,this.navParams.get('phone'));
     });
     events.subscribe('accountCreated',()=>{
