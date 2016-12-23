@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { Contacts, Contact, ContactField, ContactName,NativeStorage,HTTP } from 'ionic-native';
 import { Events } from 'ionic-angular'
 import 'rxjs/add/operator/map';
@@ -16,7 +16,7 @@ declare var firebase;
 export class ContactsService {
   storage = firebase.storage();
   storageRef = this.storage.ref();
-  constructor(public events:Events) {
+  constructor(public events:Events,private zone: NgZone) {
 
   }
   sync(){
@@ -39,86 +39,95 @@ export class ContactsService {
   }
 
   init(){
-    let existingNums = [];
-    let nonExisitingNums = [];
-    let x = 0,y = 0;
-    let id = 0;
-    let ref:any=firebase.database().ref('/');
-    let timeout = setTimeout(function(){
-      ref.child('users').off();
-      firebase.database().ref('tests/valid').set(existingNums).then(()=>{
-        console.log('DOne');
-      });
-      firebase.database().ref('tests/invalid').set(nonExisitingNums).then(()=>{
-        console.log('DOne');
-      });
-      NativeStorage.setItem('contacts',{
-        existingNums:existingNums,
-        nonExisitingNums:nonExisitingNums
-      });
-    },240000)
-    Contacts.find(['*'],{}).then((contacts)=>{
-      var length = contacts.length;
-      for(let i = 0;i<length;i++){
-        let phone = contacts[i].phoneNumbers;
-        if(!phone){
-          continue;
-        }
-        let phoneLength = phone.length
-        for(let j = 0;j<phoneLength;j++){
-          let flag = false;
-          let query = this.numParse(phone[j].value.split(' ').join(""));
-          let prev = '0';
-          if(j){
-            prev = this.numParse(phone[j-1].value.split(' ').join(""))
+    this.zone.runOutsideAngular(()=>{
+      let existingNums = new Set();
+      let nonExisitingNums = new Set();
+      let x = 0,y = 0;
+      let id = 0;
+      let id1 = 0;
+      let ref:any=firebase.database().ref('/');
+      let timeout = setTimeout(function(){
+        ref.child('users').off();
+        firebase.database().ref('tests/valid').set(existingNums).then(()=>{
+          console.log('DOne');
+        });
+        firebase.database().ref('tests/invalid').set(nonExisitingNums).then(()=>{
+          console.log('DOne');
+        });
+        NativeStorage.setItem('contacts',{
+          existingNums:existingNums,
+          nonExisitingNums:nonExisitingNums
+        });
+      },240000)
+      Contacts.find(['*'],{}).then((contacts)=>{
+        var length = contacts.length;
+        for(let i = 0;i<length;i++){
+          let phone = contacts[i].phoneNumbers;
+          if(!phone){
+            continue;
           }
-          setTimeout(function(){
-            if(query === prev){
-              return;
+          let phoneLength = phone.length
+          for(let j = 0;j<phoneLength;j++){
+            let flag = false;
+            let query = this.numParse(phone[j].value.split(' ').join(""));
+            let prev = '0';
+            if(j){
+              prev = this.numParse(phone[j-1].value.split(' ').join(""))
             }
-            y++;
             setTimeout(function(){
-              console.log('Querying firebase '+query);
-              ref.child('users').orderByChild('phone').equalTo(parseInt(query,10)).once('value',(snap)=>{
-                x++;
-                console.log(y-x);
-                if(!snap.exists()){
-                  nonExisitingNums.push(parseInt(query,10));
-                }
-                else{
-                  existingNums.push({
-                    id:++id,
-                    name:contacts[i].displayName,
-                    phone:parseInt(query,10)
-                  });
-                }
-                if((y-x)===0){
-                  clearTimeout(timeout);
-                  firebase.database().ref('tests/valid').set(existingNums).then(()=>{
-                    console.log('DOne');
-                  });
-                  firebase.database().ref('tests/invalid').set(nonExisitingNums).then(()=>{
-                    console.log('DOne');
-                  });
-                  //console.log(existingNums);
-                  //console.log(nonExisitingNums)
-                  NativeStorage.setItem('contacts',{
-                    existingNums:existingNums,
-                    nonExisitingNums:nonExisitingNums
-                  });
-                }
-              },(err)=>{
-                alert(JSON.stringify(err));
-              });
-            },70)
-          },50);
+              if(query === prev){
+                return;
+              }
+              y++;
+              setTimeout(function(){
+                  console.log('Querying firebase '+query);
+                ref.child('users').orderByChild('phone').equalTo(parseInt(query,10)).once('value',(snap)=>{
+                  x++;
+                    console.log(y-x);
+
+                  if(!snap.exists()){
+                    nonExisitingNums.add({
+                      name:contacts[i].displayName,
+                      phone:parseInt(query,10)
+                    });
+                  }
+                  else{
+                    existingNums.add({
+                      name:contacts[i].displayName,
+                      phone:parseInt(query,10)
+                    });
+                  }
+                  if((y-x)===0){
+                    clearTimeout(timeout);
+                    firebase.database().ref('tests/valid').set(existingNums).then(()=>{
+                        console.log('DOne');
+
+                    });
+                    firebase.database().ref('tests/invalid').set(nonExisitingNums).then(()=>{
+                        console.log('DOne');
+                    });
+                    //console.log(existingNums);
+                    //console.log(nonExisitingNums)
+                    NativeStorage.setItem('contacts',{
+                      existingNums:Array.from(existingNums),
+                      nonExisitingNums:Array.from(nonExisitingNums)
+                    });
+                  }
+                },(err)=>{
+                  alert(JSON.stringify(err));
+                });
+              },70)
+            },50);
+          }
         }
-      }
-    }).catch((err)=>{
-      alert(err);
-    });
+      }).catch((err)=>{
+        alert(err);
+      });
+    })
+
   }
   drop(latitude,longitude,image,friends){
+
     let uuid = UUID.UUID();
     let ref = this.storageRef.child('drops/'+uuid);
     console.log('drop auth.ts ' + latitude + ' ' + longitude);

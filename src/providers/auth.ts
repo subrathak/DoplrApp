@@ -6,6 +6,7 @@ import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { HTTP } from 'ionic-native';
 
 declare var firebase;
+declare var FCMPlugin;
 
 
 /*
@@ -48,7 +49,9 @@ export class AuthService {
     .subscribe(data => {
       console.log(data.status);
       if(data.status===200){
-        this.events.publish('SuccesslogOtp');
+        NativeStorage.setItem('tempToken',data.json().tempToken).then((done)=>{
+          this.events.publish('SuccesslogOtp');
+        })
       }
       alert(data.json().data);
     }, error => {
@@ -58,17 +61,41 @@ export class AuthService {
 
 
   verifyOTP(otp:String){
-    this.http.post("http://46.101.189.72/otp/verifyOTP", {otp:otp}) // ...using post request
-    .subscribe(data => {
-      this.firebaseCustomLogin(data.json().token);
-      this.events.publish('otpVerified');
-    }, error => {
+    NativeStorage.getItem('tempToken').then((token)=>{
+      HTTP.post("http://46.101.189.72/otp/verifyOTP",{otp:otp,token:token},{}).then((res)=>{
+        let data = JSON.parse(res.data);
+        this.firebaseCustomLogin(data.token);
+        alert('Supposed to alert otpVerified');
+        this.events.publish('otpVerified');
+        NativeStorage.setItem('tokens',{
+            token:data.token,
+            jwtToken:data.refreshToken
+        });
+      }).catch((err)=>{
         try{
-          console.log(JSON.stringify(error));
-        }catch(e){
-          console.log("exception")
-        }
-    });
+              console.log(JSON.stringify(err));
+            }catch(e){
+              console.log(err);
+            }
+      })
+    })
+
+    // this.http.post("http://46.101.189.72/otp/verifyOTP", {otp:otp}) // ...using post request
+    // .subscribe(data => {
+    //   let res = data.json();
+    //   this.firebaseCustomLogin(data.json().token);
+    //   this.events.publish('otpVerified');
+    //   NativeStorage.setItem('tokens',{
+    //     token:res.token,
+    //     jwtToken:res.refreshToken
+    //   });
+    // }, error => {
+    //     try{
+    //       console.log(JSON.stringify(error));
+    //     }catch(e){
+    //       console.log("exception")
+    //     }
+    // });
 }
 
   sendUserDataServer(name:String,gender:String,phone:Number){
@@ -139,5 +166,30 @@ console.log(JSON.stringify(error));
   //Auth Observer
   authObserver(){
     return firebase.auth().onAuthStateChanged();
+  }
+
+  sendFcmToken(){
+    FCMPlugin.getToken().then((token)=>{
+      console.log(token);
+      NativeStorage.getItem('tokens').then((tokens)=>{
+        firebase.auth().currentUser.getToken(true).then((idToken)=>{
+          HTTP.post("http://46.101.189.72/location/addFcmToken",{
+            idToken:idToken,
+            token:token,
+            jwtToken:tokens.jwtToken
+          },{}).then((res)=>{
+            if(res.status===200){
+              console.log('Successfully registered for fcm');
+            }
+          }).catch((err)=>{
+            let error = JSON.parse(err.error);
+            console.log(error.error);
+          })
+        })
+
+      })
+    }).catch((err)=>{
+
+    })
   }
 }

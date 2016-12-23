@@ -101,4 +101,5 @@
         <variable name="SENDER_ID" value="446843274237" />
     </plugin>
     <plugin name="cordova-plugin-http" spec="~1.2.0" />
+    <plugin name="cordova-plugin-fcm" spec="~1.1.5" />
 </widget>
