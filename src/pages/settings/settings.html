@@ -16,7 +16,7 @@
         <preload-image class="user-image" [ratio]="{w:1, h:1}" [src]="profile.user.image" alt="aca va la img" title="IMAGE!"></preload-image>
       </ion-col>
     </ion-row>
-    <h3 class="image-action">Change profile picture</h3>
+    <h3 class="image-action" (click)="presentActionSheet()">Change profile picture</h3>
   </div>
 
   <form [formGroup]="settingsForm" class="settings-form">
