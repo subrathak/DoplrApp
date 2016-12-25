@@ -21,6 +21,7 @@ export class WalkthroughPage {
   };
   lastSlide = false;
   login:any;
+  phoneNumber:any;
 
   @ViewChild('slider') slider: Slides;
 
@@ -37,10 +38,11 @@ export class WalkthroughPage {
     this.phone = this.otp.controls['phone'];
     this.login = false;
 
+
     events.subscribe('SuccesslogOtp',()=>{
       console.log('SUCCESSLOGOTP CALLED');
         nav.push(LoginPage,{
-          phone:this.phone.value
+          phone:this.phoneNumber
         });
     });
   }
@@ -74,6 +76,7 @@ export class WalkthroughPage {
       {
         text: 'Save',
         handler: data => {
+          this.phoneNumber = data.phone;
           this.authService.getOTP(data.phone);
           console.log('Saved clicked');
         }

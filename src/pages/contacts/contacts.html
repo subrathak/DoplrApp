@@ -17,10 +17,25 @@
 
 
 <ion-content padding>
-  <ion-list>
-    <ion-item *ngFor="let contact of contacts">
+  <ion-list class="followers-list">
+
+    <ion-item class="list-item" *ngFor="let contact of contacts">
+      <ion-thumbnail item-left>
+        <preload-image [ratio]="{w:1, h:1}" [src]="contact.image" alt="contact.name" title="contact.name"></preload-image>
+      </ion-thumbnail>
+      <h2 class="item-title">{{contact.name}}</h2>
+      <p class="item-description" rows="2">{{contact.phone}}</p>
+      <!-- <button class="relation-button" [ngClass]="{following: !item.inverse_relation}" ion-button clear icon-only item-right>
+        <ion-icon *ngIf="item.inverse_relation" name="person-add"></ion-icon>
+        <ion-icon *ngIf="!item.inverse_relation" name="checkmark"></ion-icon>
+      </button> -->
+      <ion-checkbox color="dark" checked="false" (ionChange)="add(contact.phone)"></ion-checkbox>
+
+    </ion-item>
+
+    <!-- <ion-item class="list-item" *ngFor="let contact of contacts">
       <ion-label>{{contact.name}}({{contact.phone}})</ion-label>
       <ion-checkbox color="dark" checked="false" (ionChange)="add(contact.phone)"></ion-checkbox>
-    </ion-item>
+    </ion-item> -->
   </ion-list>
 </ion-content>
