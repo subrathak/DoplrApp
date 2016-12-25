@@ -22,17 +22,17 @@ export class AuthService {
   constructor(public events: Events,public http: Http) {
   }
   //LogIn
-  login(method:String,email:String,password:String,callback){
-    return firebase.auth().signInWithEmailAndPassword(email,password);
-  }
+  // login(method:String,email:String,password:String,callback){
+  //   return firebase.auth().signInWithEmailAndPassword(email,password);
+  // }
   //SignUp
-  signUp(email:String,password:String,callback){
-    firebase.auth().createUserWithEmailAndPassword(email,password).then((success)=>{
-      callback(success,null);
-    }).catch((err)=>{
-      callback(null,err);
-    });
-  }
+  // signUp(email:String,password:String,callback){
+  //   firebase.auth().createUserWithEmailAndPassword(email,password).then((success)=>{
+  //     callback(success,null);
+  //   }).catch((err)=>{
+  //     callback(null,err);
+  //   });
+  // }
   //Get Current User
   getUser(){
     return firebase.auth().currentUser;
@@ -71,7 +71,7 @@ export class AuthService {
         let data = JSON.parse(res.data);
         this.firebaseCustomLogin(data.token);
         alert('Supposed to alert otpVerified');
-        this.events.publish('otpVerified');
+
         NativeStorage.setItem('tokens',{
             token:data.token,
             jwtToken:data.refreshToken
@@ -145,6 +145,7 @@ console.log(JSON.stringify(error));
   firebaseCustomLogin(token){
     firebase.auth().signInWithCustomToken(token).then(()=>{
       console.log("Firebase Success");
+      this.events.publish('otpVerified');
     }).catch(function(error) {
       var errorCode = error.code;
       var errorMessage = error.message;

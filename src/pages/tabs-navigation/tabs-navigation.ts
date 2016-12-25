@@ -7,6 +7,8 @@ import { NotificationsPage } from '../notifications/notifications';
 import { MapPage } from '../map/map';
 import { AuthService } from '../../providers/auth';
 import { DataService } from '../../providers/data';
+import { NativeStorage } from 'ionic-native';
+
 
 @Component({
   selector: 'tabs-navigation',
@@ -24,6 +26,7 @@ export class TabsNavigationPage {
     this.tab2Root = ProfilePage;
     this.tab3Root = NotificationsPage;
     this.tab4Root = MapPage;
+
   }
   ngOnInit(){
     this.auth.sendFcmToken();

@@ -6,6 +6,7 @@ import { SignupPage } from '../signup/signup';
 import { AuthService } from '../../providers/auth';
 declare var firebase;
 import {Http} from '@angular/http';
+import { AlertController } from 'ionic-angular';
 
 @Component({
   selector: 'walkthrough-page',
@@ -25,6 +26,7 @@ export class WalkthroughPage {
 
   constructor(public nav: NavController,
     public events: Events,
+    public alertCtrl: AlertController,
     public http: Http,
     public authService: AuthService,
     public fb: FormBuilder){
@@ -52,6 +54,35 @@ export class WalkthroughPage {
     this.slider.slideTo(this.slider.length());
   }
 
+  showPrompt() {
+  let prompt = this.alertCtrl.create({
+    title: 'Authentication',
+    message: "",
+    inputs: [
+      {
+        name: 'phone',
+        placeholder: 'Phone Number'
+      },
+    ],
+    buttons: [
+      {
+        text: 'Cancel',
+        handler: data => {
+          console.log('Cancel clicked');
+        }
+      },
+      {
+        text: 'Save',
+        handler: data => {
+          this.authService.getOTP(data.phone);
+          console.log('Saved clicked');
+        }
+      }
+    ]
+  });
+  prompt.present();
+}
+
   // makePostRequest(num) {
   //     this.http.post("http://46.101.189.72/otp/sendOTP", {phone:num})
   //     .subscribe(data => {
@@ -74,11 +105,14 @@ export class WalkthroughPage {
   goToSignup() {
     this.nav.push(SignupPage);
   }
-
-  doLogin(signInForm: any){
-    // this.makePostRequest(signInForm.phone);
-    this.authService.getOTP(signInForm.phone);
-    return false;
-
+  doLogin(){
+    this.showPrompt();
   }
+  //
+  // doLogin(signInForm: any){
+  //   // this.makePostRequest(signInForm.phone);
+  //   this.authService.getOTP(signInForm.phone);
+  //   return false;
+  //
+  // }
 }

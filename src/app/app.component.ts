@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { Platform, MenuController, Nav, App,Events } from 'ionic-angular';
-import { StatusBar, Splashscreen } from 'ionic-native';
+import { StatusBar, Splashscreen, NativeStorage } from 'ionic-native';
 import { LoginPage } from '../pages/login/login'
 import { TabsNavigationPage } from '../pages/tabs-navigation/tabs-navigation';
 import { FormsPage } from '../pages/forms/forms';
@@ -33,7 +33,13 @@ export class MyApp {
   ) {
 
     platform.ready().then(() => {
-
+      NativeStorage.getItem('tokens').then((tokens)=>{
+        if(!tokens.jwtToken){
+          this.rootPage = WalkthroughPage;
+        }else{
+          this.rootPage = TabsNavigationPage;
+        }
+      });
       StatusBar.styleDefault();
       var push = Push.init({
         android: {
